@@ -1,4 +1,13 @@
-import { pgTable, text, timestamp, uuid, integer, primaryKey } from 'drizzle-orm/pg-core';
+import {
+	pgTable,
+	text,
+	timestamp,
+	uuid,
+	integer,
+	primaryKey,
+	vector,
+	index
+} from 'drizzle-orm/pg-core';
 
 /**
  * USERS TABLE
@@ -94,6 +103,40 @@ export const chatMessages = pgTable('chat_messages', {
 	content: text('content').notNull(),
 	createdAt: timestamp('created_at').defaultNow()
 });
+
+/**
+ * DOCUMENTS TABLE (RAG)
+ */
+export const documents = pgTable('documents', {
+	id: uuid('id').defaultRandom().primaryKey(),
+	userId: uuid('user_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
+	filename: text('filename').notNull(),
+	mimeType: text('mime_type').notNull().default('text/plain'),
+	content: text('content').notNull(),
+	createdAt: timestamp('created_at').defaultNow()
+});
+
+/**
+ * DOCUMENT CHUNKS TABLE (RAG)
+ */
+export const documentChunks = pgTable(
+	'document_chunks',
+	{
+		id: uuid('id').defaultRandom().primaryKey(),
+		documentId: uuid('document_id')
+			.notNull()
+			.references(() => documents.id, { onDelete: 'cascade' }),
+		content: text('content').notNull(),
+		chunkIndex: integer('chunk_index').notNull(),
+		embedding: vector('embedding', { dimensions: 384 }),
+		createdAt: timestamp('created_at').defaultNow()
+	},
+	(table) => ({
+		embeddingIdx: index('embedding_idx').using('hnsw', table.embedding.op('vector_cosine_ops'))
+	})
+);
 
 /**
  * PASSWORD RESET TOKENS
