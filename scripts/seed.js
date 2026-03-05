@@ -2,7 +2,8 @@ import pg from 'pg';
 import { randomUUID } from 'crypto';
 
 const pool = new pg.Pool({
-	connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/auth-app'
+	connectionString:
+		process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/auth-app'
 });
 
 async function seed() {

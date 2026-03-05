@@ -40,7 +40,8 @@ export function buildContextPrompt(chunks: RetrievedChunk[]): string {
 	if (chunks.length === 0) return '';
 
 	const contextParts = chunks.map(
-		(c, i) => `[Source: ${c.filename}, Chunk ${c.chunkIndex + 1}] (similarity: ${(c.similarity * 100).toFixed(1)}%)\n${c.content}`
+		(c, i) =>
+			`[Source: ${c.filename}, Chunk ${c.chunkIndex + 1}] (similarity: ${(c.similarity * 100).toFixed(1)}%)\n${c.content}`
 	);
 
 	return `\n\nRelevant context from uploaded documents:\n---\n${contextParts.join('\n\n')}\n---\n\nUse the above context to inform your answer. When you use information from the context, cite the source filename. If the context is not relevant to the question, you may ignore it.`;

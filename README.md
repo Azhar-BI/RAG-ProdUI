@@ -123,4 +123,5 @@ The app will be available at [http://localhost:5173](http://localhost:5173).
 - **Email not sending:** Double-check your SMTP credentials in `.env`. Mailtrap is recommended for development.
 - **OAuth not working:** Ensure your Google/GitHub OAuth app callback URLs are set to `http://localhost:5173/auth/callback/google` and `http://localhost:5173/auth/callback/github`.
 - **Build fails:** Run `pnpm check` to see type errors, and `pnpm lint` to check formatting.
+
 # RAG-ProdUI
