@@ -10,7 +10,6 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
 		return new Response('Unauthorized', { status: 401 });
 	}
 
-	// Verify the conversation belongs to the user
 	const [conversation] = await db
 		.select()
 		.from(conversations)
@@ -20,12 +19,13 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
 		return new Response('Not found', { status: 404 });
 	}
 
-	const { role, content } = await request.json();
+	const { role, content, parentId } = await request.json();
 
 	const [message] = await db
 		.insert(chatMessages)
 		.values({
 			conversationId: params.id,
+			parentId: parentId || null,
 			role,
 			content
 		})
