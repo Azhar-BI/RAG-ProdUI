@@ -99,6 +99,7 @@ export const chatMessages = pgTable('chat_messages', {
 	conversationId: uuid('conversation_id')
 		.notNull()
 		.references(() => conversations.id, { onDelete: 'cascade' }),
+	parentId: uuid('parent_id'),
 	role: text('role').notNull(), // 'user' | 'assistant'
 	content: text('content').notNull(),
 	createdAt: timestamp('created_at').defaultNow()

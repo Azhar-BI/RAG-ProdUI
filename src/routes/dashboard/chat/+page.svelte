@@ -2,22 +2,101 @@
 	import ChatMessage from '$lib/components/chat/ChatMessage.svelte';
 	import { onMount } from 'svelte';
 
-	type Message = { role: 'user' | 'assistant'; content: string };
+	type TreeMessage = {
+		id: string;
+		parentId: string | null;
+		role: 'user' | 'assistant';
+		content: string;
+		createdAt: string;
+	};
+
 	type Conversation = { id: string; title: string; updatedAt: string };
 
-	let messages: Message[] = $state([]);
+	// All messages in tree form
+	let allMessages: TreeMessage[] = $state([]);
+	// The active path (linear list derived from tree)
+	let activePath: TreeMessage[] = $state([]);
+	// Track which sibling is selected at each branch point: parentId -> selected child id
+	let branchSelections: Record<string, string> = $state({});
+
 	let input = $state('');
 	let loading = $state(false);
 	let error = $state('');
 	let messagesContainer: HTMLDivElement;
+	let editingMessageId: string | null = $state(null);
+	let editContent = $state('');
 
 	let conversationList: Conversation[] = $state([]);
 	let activeConversationId: string | null = $state(null);
 	let sidebarOpen = $state(false);
+	let searchQuery = $state('');
+
+	let filteredConversations = $derived(
+		searchQuery.trim()
+			? conversationList.filter((c) => c.title.toLowerCase().includes(searchQuery.toLowerCase()))
+			: conversationList
+	);
 
 	onMount(() => {
 		loadConversations();
 	});
+
+	// --- Tree utilities ---
+
+	function getChildren(parentId: string | null): TreeMessage[] {
+		return allMessages.filter((m) => m.parentId === parentId);
+	}
+
+	function rebuildActivePath() {
+		const path: TreeMessage[] = [];
+		let parentId: string | null = null;
+
+		while (true) {
+			const children = getChildren(parentId);
+			if (children.length === 0) break;
+
+			// Use branch selection or default to last child
+			const selectedId: string | undefined =
+				parentId !== null ? branchSelections[parentId] : branchSelections['root'];
+			const selected: TreeMessage =
+				children.find((c) => c.id === selectedId) || children[children.length - 1];
+
+			// Store the selection
+			if (parentId !== null) {
+				branchSelections[parentId] = selected.id;
+			} else {
+				branchSelections['root'] = selected.id;
+			}
+
+			path.push(selected);
+			parentId = selected.id;
+		}
+
+		activePath = path;
+	}
+
+	function getSiblings(msg: TreeMessage): TreeMessage[] {
+		return getChildren(msg.parentId);
+	}
+
+	function getSiblingIndex(msg: TreeMessage): number {
+		const siblings = getSiblings(msg);
+		return siblings.findIndex((s) => s.id === msg.id);
+	}
+
+	function switchBranch(msg: TreeMessage, direction: -1 | 1) {
+		const siblings = getSiblings(msg);
+		const currentIdx = siblings.findIndex((s) => s.id === msg.id);
+		const newIdx = currentIdx + direction;
+		if (newIdx < 0 || newIdx >= siblings.length) return;
+
+		const newSelected = siblings[newIdx];
+		const key = msg.parentId ?? 'root';
+		branchSelections[key] = newSelected.id;
+		rebuildActivePath();
+	}
+
+	// --- API calls ---
 
 	async function loadConversations() {
 		try {
@@ -27,7 +106,7 @@
 				if (Array.isArray(data)) conversationList = data;
 			}
 		} catch {
-			// silently fail — tables may not exist yet
+			// silently fail
 		}
 	}
 
@@ -37,7 +116,9 @@
 			if (!res.ok) return;
 			const data = await res.json();
 			activeConversationId = id;
-			messages = data.messages.map((m: any) => ({ role: m.role, content: m.content }));
+			allMessages = data.messages;
+			branchSelections = {};
+			rebuildActivePath();
 			sidebarOpen = false;
 			setTimeout(scrollToBottom, 0);
 		} catch {
@@ -47,7 +128,9 @@
 
 	async function startNewChat() {
 		activeConversationId = null;
-		messages = [];
+		allMessages = [];
+		activePath = [];
+		branchSelections = {};
 		error = '';
 		sidebarOpen = false;
 	}
@@ -59,19 +142,32 @@
 			conversationList = conversationList.filter((c) => c.id !== id);
 			if (activeConversationId === id) {
 				activeConversationId = null;
-				messages = [];
+				allMessages = [];
+				activePath = [];
+				branchSelections = {};
 			}
 		} catch {
 			// silently fail
 		}
 	}
 
-	async function saveMessage(conversationId: string, role: string, content: string) {
-		await fetch(`/api/conversations/${conversationId}/messages`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ role, content })
-		});
+	async function saveMessage(
+		conversationId: string,
+		role: string,
+		content: string,
+		parentId: string | null
+	): Promise<TreeMessage | null> {
+		try {
+			const res = await fetch(`/api/conversations/${conversationId}/messages`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ role, content, parentId })
+			});
+			if (res.ok) return await res.json();
+		} catch {
+			// fail silently
+		}
+		return null;
 	}
 
 	function scrollToBottom() {
@@ -80,18 +176,18 @@
 		}
 	}
 
+	// --- Send message ---
+
 	async function sendMessage() {
 		const trimmed = input.trim();
 		if (!trimmed || loading) return;
 
 		error = '';
-		const userMessage: Message = { role: 'user', content: trimmed };
-		messages = [...messages, userMessage];
-		input = '';
 		loading = true;
+		input = '';
 
-		messages = [...messages, { role: 'assistant', content: '' }];
-		setTimeout(scrollToBottom, 0);
+		// Determine parent: last message in active path
+		const parentId = activePath.length > 0 ? activePath[activePath.length - 1].id : null;
 
 		// Create conversation if new
 		if (!activeConversationId) {
@@ -108,22 +204,56 @@
 				conversationList = [conv, ...conversationList];
 			} catch {
 				error = 'Failed to create conversation.';
-				messages = messages.slice(0, -1);
 				loading = false;
 				return;
 			}
 		}
 
 		// Save user message
-		if (activeConversationId) {
-			await saveMessage(activeConversationId, 'user', trimmed).catch(() => {});
+		const userMsg = await saveMessage(activeConversationId!, 'user', trimmed, parentId);
+		if (!userMsg) {
+			error = 'Failed to save message.';
+			loading = false;
+			return;
 		}
+
+		allMessages = [...allMessages, userMsg];
+		const key = parentId ?? 'root';
+		branchSelections[key] = userMsg.id;
+		rebuildActivePath();
+		setTimeout(scrollToBottom, 0);
+
+		// Stream AI response
+		await streamAIResponse(userMsg.id);
+	}
+
+	async function streamAIResponse(parentId: string) {
+		// Build messages for the API from active path up to parentId
+		const pathUpToParent = [];
+		for (const msg of activePath) {
+			pathUpToParent.push({ role: msg.role, content: msg.content });
+			if (msg.id === parentId) break;
+		}
+
+		// Add placeholder for streaming
+		const placeholderId = 'streaming-' + Date.now();
+		const placeholder: TreeMessage = {
+			id: placeholderId,
+			parentId,
+			role: 'assistant',
+			content: '',
+			createdAt: new Date().toISOString()
+		};
+		allMessages = [...allMessages, placeholder];
+		branchSelections[parentId] = placeholderId;
+		rebuildActivePath();
+		setTimeout(scrollToBottom, 0);
 
 		try {
 			const res = await fetch('/api/chat', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ messages: messages.slice(0, -1) })
+				body: JSON.stringify({ messages: pathUpToParent })
 			});
 
 			if (!res.ok) {
@@ -144,27 +274,97 @@
 				const chunk = decoder.decode(value, { stream: true });
 				assistantContent += chunk;
 
-				messages = [...messages.slice(0, -1), { role: 'assistant', content: assistantContent }];
+				// Update placeholder content
+				allMessages = allMessages.map((m) =>
+					m.id === placeholderId ? { ...m, content: assistantContent } : m
+				);
+				rebuildActivePath();
 				setTimeout(scrollToBottom, 0);
 			}
 
-			// Save assistant message
-			if (activeConversationId) {
-				await saveMessage(activeConversationId, 'assistant', assistantContent).catch(() => {});
+			// Save the real assistant message to DB
+			const assistantMsg = await saveMessage(
+				activeConversationId!,
+				'assistant',
+				assistantContent,
+				parentId
+			);
+
+			if (assistantMsg) {
+				// Replace placeholder with real message
+				allMessages = allMessages.map((m) => (m.id === placeholderId ? assistantMsg : m));
+				branchSelections[parentId] = assistantMsg.id;
+				rebuildActivePath();
 			}
 
-			// Refresh conversation list to get updated title
 			await loadConversations();
 		} catch (err: any) {
 			error = err.message || 'Something went wrong. Please try again.';
-			if (messages.at(-1)?.content === '') {
-				messages = messages.slice(0, -1);
-			}
+			// Remove placeholder
+			allMessages = allMessages.filter((m) => m.id !== placeholderId);
+			rebuildActivePath();
 		} finally {
 			loading = false;
 			setTimeout(scrollToBottom, 0);
 		}
 	}
+
+	// --- Edit a user message (creates a new branch) ---
+
+	function startEdit(msg: TreeMessage) {
+		editingMessageId = msg.id;
+		editContent = msg.content;
+	}
+
+	function cancelEdit() {
+		editingMessageId = null;
+		editContent = '';
+	}
+
+	async function submitEdit(msg: TreeMessage) {
+		const trimmed = editContent.trim();
+		if (!trimmed || loading) return;
+
+		editingMessageId = null;
+		editContent = '';
+		loading = true;
+		error = '';
+
+		// The new edited message branches from the same parent as the original
+		const parentId = msg.parentId;
+
+		const userMsg = await saveMessage(activeConversationId!, 'user', trimmed, parentId);
+		if (!userMsg) {
+			error = 'Failed to save edited message.';
+			loading = false;
+			return;
+		}
+
+		allMessages = [...allMessages, userMsg];
+		const key = parentId ?? 'root';
+		branchSelections[key] = userMsg.id;
+		rebuildActivePath();
+		setTimeout(scrollToBottom, 0);
+
+		// Stream new AI response
+		await streamAIResponse(userMsg.id);
+	}
+
+	// --- Regenerate AI response (creates a new branch from the user message) ---
+
+	async function regenerateResponse(msg: TreeMessage) {
+		if (loading) return;
+		loading = true;
+		error = '';
+
+		// The AI message's parent is a user message — regenerate creates a new sibling
+		const parentId = msg.parentId;
+		if (!parentId) return;
+
+		await streamAIResponse(parentId);
+	}
+
+	// --- UI helpers ---
 
 	function handleKeydown(e: KeyboardEvent) {
 		if (e.key === 'Enter' && !e.shiftKey) {
@@ -239,11 +439,24 @@
 				</button>
 			</div>
 
+			<!-- Search -->
+			<div class="border-b border-gray-100 p-2">
+				<input
+					type="text"
+					bind:value={searchQuery}
+					placeholder="Search conversations..."
+					class="w-full rounded-lg border border-gray-200 px-3 py-2 text-xs placeholder:text-gray-400 focus:border-transparent focus:ring-2 focus:ring-black focus:outline-none"
+					aria-label="Search conversations"
+				/>
+			</div>
+
 			<div class="flex-1 space-y-1 overflow-y-auto p-2">
-				{#if conversationList.length === 0}
-					<p class="px-3 py-8 text-center text-xs text-gray-400">No conversations yet</p>
+				{#if filteredConversations.length === 0}
+					<p class="px-3 py-8 text-center text-xs text-gray-400">
+						{searchQuery ? 'No matches found' : 'No conversations yet'}
+					</p>
 				{:else}
-					{#each conversationList as conv}
+					{#each filteredConversations as conv}
 						<div
 							class="group flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left transition {activeConversationId ===
 							conv.id
@@ -325,7 +538,7 @@
 					</div>
 				</div>
 			</div>
-			{#if messages.length > 0}
+			{#if activePath.length > 0}
 				<button
 					onclick={startNewChat}
 					class="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2 text-sm text-gray-500 transition hover:border-gray-300 hover:bg-gray-50 hover:text-black"
@@ -350,7 +563,7 @@
 			bind:this={messagesContainer}
 			class="mb-4 flex-1 space-y-5 overflow-y-auto rounded-2xl border-2 border-gray-200 bg-white p-5 shadow-inner"
 		>
-			{#if messages.length === 0}
+			{#if activePath.length === 0}
 				<div class="flex h-full flex-col items-center justify-center px-4 text-center">
 					<div
 						class="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-100 to-purple-100 shadow-sm"
@@ -499,12 +712,172 @@
 					</div>
 				</div>
 			{:else}
-				{#each messages as message, i}
-					<ChatMessage
-						role={message.role}
-						content={message.content}
-						loading={loading && i === messages.length - 1}
-					/>
+				{#each activePath as msg, i (msg.id)}
+					{@const siblings = getSiblings(msg)}
+					{@const siblingIdx = getSiblingIndex(msg)}
+					{@const hasBranches = siblings.length > 1}
+
+					<!-- Branch navigator -->
+					{#if hasBranches}
+						<div class="flex items-center justify-center gap-2 py-1">
+							<button
+								onclick={() => switchBranch(msg, -1)}
+								disabled={siblingIdx === 0}
+								class="rounded p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 disabled:opacity-30"
+								aria-label="Previous branch"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke-width="2"
+									stroke="currentColor"
+									class="h-3.5 w-3.5"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="M15.75 19.5 8.25 12l7.5-7.5"
+									/>
+								</svg>
+							</button>
+							<span class="text-xs font-medium text-gray-400">
+								{siblingIdx + 1} / {siblings.length}
+							</span>
+							<button
+								onclick={() => switchBranch(msg, 1)}
+								disabled={siblingIdx === siblings.length - 1}
+								class="rounded p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 disabled:opacity-30"
+								aria-label="Next branch"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke-width="2"
+									stroke="currentColor"
+									class="h-3.5 w-3.5"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="m8.25 4.5 7.5 7.5-7.5 7.5"
+									/>
+								</svg>
+							</button>
+						</div>
+					{/if}
+
+					<!-- Editing state -->
+					{#if editingMessageId === msg.id}
+						<div class="flex justify-end gap-3">
+							<div class="flex max-w-[75%] flex-col items-end gap-2">
+								<textarea
+									bind:value={editContent}
+									rows="3"
+									class="w-full min-w-[300px] rounded-xl border border-gray-300 px-4 py-3 text-sm focus:border-transparent focus:ring-2 focus:ring-black focus:outline-none"
+									aria-label="Edit message"
+								></textarea>
+								<div class="flex gap-2">
+									<button
+										onclick={cancelEdit}
+										class="rounded-lg border border-gray-200 px-3 py-1.5 text-xs text-gray-500 transition hover:bg-gray-50"
+									>
+										Cancel
+									</button>
+									<button
+										onclick={() => submitEdit(msg)}
+										class="rounded-lg bg-black px-3 py-1.5 text-xs text-white transition hover:bg-gray-800"
+									>
+										Submit
+									</button>
+								</div>
+							</div>
+						</div>
+					{:else}
+						<ChatMessage
+							role={msg.role}
+							content={msg.content}
+							loading={loading && i === activePath.length - 1}
+						/>
+
+						<!-- Action buttons under each message -->
+						{#if !loading || i !== activePath.length - 1}
+							<div
+								class="flex {msg.role === 'user'
+									? 'justify-end pr-11'
+									: 'justify-start pl-11'} -mt-3 gap-1"
+							>
+								{#if msg.role === 'user'}
+									<button
+										onclick={() => startEdit(msg)}
+										class="rounded p-1 text-gray-300 transition hover:bg-gray-100 hover:text-gray-600"
+										title="Edit message"
+										aria-label="Edit message"
+									>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke-width="1.5"
+											stroke="currentColor"
+											class="h-3.5 w-3.5"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+											/>
+										</svg>
+									</button>
+								{/if}
+								{#if msg.role === 'assistant' && msg.content}
+									<button
+										onclick={() => regenerateResponse(msg)}
+										class="rounded p-1 text-gray-300 transition hover:bg-gray-100 hover:text-gray-600"
+										title="Regenerate response"
+										aria-label="Regenerate response"
+									>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke-width="1.5"
+											stroke="currentColor"
+											class="h-3.5 w-3.5"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182M2.985 14.652"
+											/>
+										</svg>
+									</button>
+									<button
+										onclick={() => navigator.clipboard.writeText(msg.content)}
+										class="rounded p-1 text-gray-300 transition hover:bg-gray-100 hover:text-gray-600"
+										title="Copy to clipboard"
+										aria-label="Copy to clipboard"
+									>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke-width="1.5"
+											stroke="currentColor"
+											class="h-3.5 w-3.5"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9.75a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
+											/>
+										</svg>
+									</button>
+								{/if}
+							</div>
+						{/if}
+					{/if}
 				{/each}
 			{/if}
 		</div>
