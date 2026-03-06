@@ -2,12 +2,19 @@
 	import ChatMessage from '$lib/components/chat/ChatMessage.svelte';
 	import { onMount } from 'svelte';
 
+	type Citation = {
+		filename: string;
+		chunkIndex: number;
+		similarity: number;
+	};
+
 	type TreeMessage = {
 		id: string;
 		parentId: string | null;
 		role: 'user' | 'assistant';
 		content: string;
 		createdAt: string;
+		citations?: Citation[];
 	};
 
 	type Conversation = { id: string; title: string; updatedAt: string };
@@ -31,6 +38,14 @@
 	let sidebarOpen = $state(false);
 	let searchQuery = $state('');
 
+	// Document upload state
+	type Document = { id: string; filename: string; mimeType: string; createdAt: string };
+	let userDocuments: Document[] = $state([]);
+	let uploading = $state(false);
+	let uploadError = $state('');
+	let showDocPanel = $state(false);
+	let fileInput: HTMLInputElement = $state(null!);
+
 	let filteredConversations = $derived(
 		searchQuery.trim()
 			? conversationList.filter((c) => c.title.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -39,7 +54,60 @@
 
 	onMount(() => {
 		loadConversations();
+		loadDocuments();
 	});
+
+	// --- Document management ---
+
+	async function loadDocuments() {
+		try {
+			const res = await fetch('/api/documents');
+			if (res.ok) {
+				const data = await res.json();
+				if (Array.isArray(data)) userDocuments = data;
+			}
+		} catch {
+			// silently fail
+		}
+	}
+
+	async function uploadDocument(e: Event) {
+		const target = e.target as HTMLInputElement;
+		const file = target.files?.[0];
+		if (!file) return;
+
+		uploading = true;
+		uploadError = '';
+
+		const formData = new FormData();
+		formData.append('file', file);
+
+		try {
+			const res = await fetch('/api/documents', {
+				method: 'POST',
+				body: formData
+			});
+			if (!res.ok) {
+				const data = await res.json();
+				throw new Error(data.error || 'Upload failed');
+			}
+			await loadDocuments();
+		} catch (err: any) {
+			uploadError = err.message || 'Failed to upload document.';
+		} finally {
+			uploading = false;
+			target.value = '';
+		}
+	}
+
+	async function deleteDocument(id: string) {
+		try {
+			await fetch(`/api/documents/${id}`, { method: 'DELETE' });
+			userDocuments = userDocuments.filter((d) => d.id !== id);
+		} catch {
+			// silently fail
+		}
+	}
 
 	// --- Tree utilities ---
 
@@ -261,6 +329,17 @@
 				throw new Error(text || `Error: ${res.status}`);
 			}
 
+			// Parse citations from response header
+			let responseCitations: Citation[] = [];
+			const citationsHeader = res.headers.get('X-Citations');
+			if (citationsHeader) {
+				try {
+					responseCitations = JSON.parse(citationsHeader);
+				} catch {
+					// ignore parse errors
+				}
+			}
+
 			const reader = res.body?.getReader();
 			const decoder = new TextDecoder();
 			if (!reader) throw new Error('No response stream');
@@ -291,8 +370,10 @@
 			);
 
 			if (assistantMsg) {
-				// Replace placeholder with real message
-				allMessages = allMessages.map((m) => (m.id === placeholderId ? assistantMsg : m));
+				// Replace placeholder with real message, include citations
+				allMessages = allMessages.map((m) =>
+					m.id === placeholderId ? { ...assistantMsg, citations: responseCitations } : m
+				);
 				branchSelections[parentId] = assistantMsg.id;
 				rebuildActivePath();
 			}
@@ -538,10 +619,12 @@
 					</div>
 				</div>
 			</div>
-			{#if activePath.length > 0}
+			<div class="flex items-center gap-2">
 				<button
-					onclick={startNewChat}
+					onclick={() => (showDocPanel = !showDocPanel)}
 					class="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2 text-sm text-gray-500 transition hover:border-gray-300 hover:bg-gray-50 hover:text-black"
+					title="Manage documents for RAG"
+					aria-label="Toggle documents panel"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -551,12 +634,149 @@
 						stroke="currentColor"
 						class="h-4 w-4"
 					>
-						<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+						/>
 					</svg>
-					New Chat
+					Docs
+					{#if userDocuments.length > 0}
+						<span
+							class="flex h-5 min-w-5 items-center justify-center rounded-full bg-blue-500 px-1.5 text-[10px] font-bold text-white"
+							>{userDocuments.length}</span
+						>
+					{/if}
 				</button>
-			{/if}
+				{#if activePath.length > 0}
+					<button
+						onclick={startNewChat}
+						class="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2 text-sm text-gray-500 transition hover:border-gray-300 hover:bg-gray-50 hover:text-black"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+							class="h-4 w-4"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+						</svg>
+						New Chat
+					</button>
+				{/if}
+			</div>
 		</div>
+
+		<!-- Document upload panel -->
+		{#if showDocPanel}
+			<div class="mb-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+				<div class="mb-3 flex items-center justify-between">
+					<h3 class="text-sm font-semibold text-gray-700">Knowledge Base (RAG)</h3>
+					<div class="flex items-center gap-2">
+						<input
+							bind:this={fileInput}
+							type="file"
+							accept=".txt,text/plain"
+							onchange={uploadDocument}
+							class="hidden"
+							aria-label="Upload document"
+						/>
+						<button
+							onclick={() => fileInput.click()}
+							disabled={uploading}
+							class="flex items-center gap-1.5 rounded-lg bg-black px-3 py-1.5 text-xs font-medium text-white transition hover:bg-gray-800 disabled:opacity-50"
+						>
+							{#if uploading}
+								<svg class="h-3 w-3 animate-spin" viewBox="0 0 24 24" fill="none">
+									<circle
+										class="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										stroke-width="4"
+									></circle>
+									<path
+										class="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+									></path>
+								</svg>
+								Uploading...
+							{:else}
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke-width="2"
+									stroke="currentColor"
+									class="h-3 w-3"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
+									/>
+								</svg>
+								Upload .txt
+							{/if}
+						</button>
+					</div>
+				</div>
+
+				{#if uploadError}
+					<p class="mb-2 text-xs text-red-500">{uploadError}</p>
+				{/if}
+
+				{#if userDocuments.length === 0}
+					<p class="py-3 text-center text-xs text-gray-400">
+						No documents uploaded. Upload text files to enable RAG-powered answers with citations.
+					</p>
+				{:else}
+					<div class="max-h-36 space-y-1.5 overflow-y-auto">
+						{#each userDocuments as doc}
+							<div class="group flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+								<div class="flex items-center gap-2 overflow-hidden">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke-width="1.5"
+										stroke="currentColor"
+										class="h-4 w-4 flex-shrink-0 text-gray-400"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+										/>
+									</svg>
+									<span class="truncate text-xs font-medium text-gray-700">{doc.filename}</span>
+								</div>
+								<button
+									onclick={() => deleteDocument(doc.id)}
+									class="flex-shrink-0 rounded p-1 text-gray-300 opacity-0 transition group-hover:opacity-100 hover:text-red-500"
+									aria-label="Delete document"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke-width="1.5"
+										stroke="currentColor"
+										class="h-3.5 w-3.5"
+									>
+										<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+									</svg>
+								</button>
+							</div>
+						{/each}
+					</div>
+				{/if}
+			</div>
+		{/if}
 
 		<!-- Messages area -->
 		<div
@@ -799,6 +1019,8 @@
 							role={msg.role}
 							content={msg.content}
 							loading={loading && i === activePath.length - 1}
+							createdAt={msg.createdAt}
+							citations={msg.citations}
 						/>
 
 						<!-- Action buttons under each message -->
@@ -811,7 +1033,7 @@
 								{#if msg.role === 'user'}
 									<button
 										onclick={() => startEdit(msg)}
-										class="rounded p-1 text-gray-300 transition hover:bg-gray-100 hover:text-gray-600"
+										class="rounded p-1 text-gray-500 transition hover:bg-gray-100 hover:text-gray-800"
 										title="Edit message"
 										aria-label="Edit message"
 									>
@@ -834,7 +1056,7 @@
 								{#if msg.role === 'assistant' && msg.content}
 									<button
 										onclick={() => regenerateResponse(msg)}
-										class="rounded p-1 text-gray-300 transition hover:bg-gray-100 hover:text-gray-600"
+										class="rounded p-1 text-gray-500 transition hover:bg-gray-100 hover:text-gray-800"
 										title="Regenerate response"
 										aria-label="Regenerate response"
 									>
@@ -855,7 +1077,7 @@
 									</button>
 									<button
 										onclick={() => navigator.clipboard.writeText(msg.content)}
-										class="rounded p-1 text-gray-300 transition hover:bg-gray-100 hover:text-gray-600"
+										class="rounded p-1 text-gray-500 transition hover:bg-gray-100 hover:text-gray-800"
 										title="Copy to clipboard"
 										aria-label="Copy to clipboard"
 									>

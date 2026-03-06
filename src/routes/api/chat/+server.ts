@@ -41,10 +41,30 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		messages
 	});
 
-	// Add citations as a custom header
-	const response = result.toTextStreamResponse();
+	const stream = result.textStream;
+
+	const headers: Record<string, string> = {
+		'Content-Type': 'text/plain; charset=utf-8',
+		'Transfer-Encoding': 'chunked'
+	};
 	if (citations.length > 0) {
-		response.headers.set('X-Citations', JSON.stringify(citations));
+		headers['X-Citations'] = JSON.stringify(citations);
 	}
-	return response;
+
+	const encoder = new TextEncoder();
+	const readable = new ReadableStream({
+		async start(controller) {
+			try {
+				for await (const chunk of stream) {
+					controller.enqueue(encoder.encode(chunk));
+				}
+			} catch {
+				// stream error
+			} finally {
+				controller.close();
+			}
+		}
+	});
+
+	return new Response(readable, { headers });
 };

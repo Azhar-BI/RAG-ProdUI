@@ -45,6 +45,8 @@
 		"ai": "^6.0.111",
 		"bcryptjs": "^3.0.3",
 		"drizzle-orm": "^0.45.1",
+		"highlight.js": "^11.11.1",
+		"marked": "^17.0.4",
 		"nodemailer": "^7.0.13",
 		"pg": "^8.19.0"
 	}

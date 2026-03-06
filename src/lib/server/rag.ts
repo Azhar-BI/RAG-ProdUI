@@ -11,6 +11,8 @@ export interface RetrievedChunk {
 	similarity: number;
 }
 
+const MIN_SIMILARITY = 0.35;
+
 export async function retrieveContext(
 	query: string,
 	userId: string,
@@ -29,7 +31,13 @@ export async function retrieveContext(
 		})
 		.from(documentChunks)
 		.innerJoin(documents, eq(documentChunks.documentId, documents.id))
-		.where(and(eq(documents.userId, userId), sql`${documentChunks.embedding} IS NOT NULL`))
+		.where(
+			and(
+				eq(documents.userId, userId),
+				sql`${documentChunks.embedding} IS NOT NULL`,
+				sql`1 - (${documentChunks.embedding} <=> ${embeddingStr}::vector) >= ${MIN_SIMILARITY}`
+			)
+		)
 		.orderBy(sql`${documentChunks.embedding} <=> ${embeddingStr}::vector`)
 		.limit(topK);
 
