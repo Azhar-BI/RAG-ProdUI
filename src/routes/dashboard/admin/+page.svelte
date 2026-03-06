@@ -4,7 +4,7 @@
 	let { data, form } = $props();
 
 	function formatDate(iso: string | null): string {
-		if (!iso) return '—';
+		if (!iso) return '\u2014';
 		return new Date(iso).toLocaleDateString('en-US', {
 			year: 'numeric',
 			month: 'short',
@@ -14,40 +14,41 @@
 </script>
 
 <svelte:head>
-	<title>Admin Panel — AuthFlow</title>
+	<title>Admin Panel &mdash; AuthFlow</title>
 </svelte:head>
 
 <div class="space-y-8">
 	<!-- Header -->
-	<div>
-		<h1 class="text-2xl font-bold text-gray-900">Admin Panel</h1>
-		<p class="mt-1 text-gray-500">Manage users and monitor application statistics.</p>
+	<div class="rounded-2xl bg-slate-900 p-6 text-white">
+		<h1 class="text-3xl font-bold tracking-tight">Admin Panel</h1>
+		<p class="mt-2 text-slate-400">Manage users and monitor application statistics.</p>
 	</div>
 
 	<!-- Error/Success messages -->
 	{#if form?.error}
-		<div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+		<div class="rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-700">
 			{form.error}
 		</div>
 	{/if}
 	{#if form?.success}
-		<div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+		<div class="rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-medium text-emerald-700">
 			Action completed successfully.
 		</div>
 	{/if}
 
 	<!-- Stats Cards -->
-	<div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-		<div class="rounded-xl border border-gray-200 bg-white p-5">
-			<div class="mb-2 flex items-center gap-3">
-				<div class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-100">
+	<div class="grid grid-cols-2 gap-5 lg:grid-cols-4">
+		<!-- Total Users -->
+		<div class="rounded-2xl border border-slate-200 border-t-4 border-t-lime-500 bg-white p-6 shadow-sm">
+			<div class="mb-3 flex items-center gap-3">
+				<div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke-width="1.5"
 						stroke="currentColor"
-						class="h-5 w-5 text-gray-600"
+						class="h-5 w-5 text-white"
 					>
 						<path
 							stroke-linecap="round"
@@ -57,20 +58,21 @@
 					</svg>
 				</div>
 			</div>
-			<p class="text-2xl font-bold text-gray-900">{data.stats.totalUsers}</p>
-			<p class="text-sm text-gray-500">Total Users</p>
+			<p class="text-3xl font-bold text-slate-900">{data.stats.totalUsers}</p>
+			<p class="mt-1 text-sm text-slate-500">Total Users</p>
 		</div>
 
-		<div class="rounded-xl border border-gray-200 bg-white p-5">
-			<div class="mb-2 flex items-center gap-3">
-				<div class="flex h-9 w-9 items-center justify-center rounded-lg bg-green-50">
+		<!-- Verified -->
+		<div class="rounded-2xl border border-slate-200 border-t-4 border-t-emerald-500 bg-white p-6 shadow-sm">
+			<div class="mb-3 flex items-center gap-3">
+				<div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke-width="1.5"
 						stroke="currentColor"
-						class="h-5 w-5 text-green-600"
+						class="h-5 w-5 text-emerald-600"
 					>
 						<path
 							stroke-linecap="round"
@@ -80,20 +82,21 @@
 					</svg>
 				</div>
 			</div>
-			<p class="text-2xl font-bold text-gray-900">{data.stats.verifiedCount}</p>
-			<p class="text-sm text-gray-500">Verified Users</p>
+			<p class="text-3xl font-bold text-slate-900">{data.stats.verifiedCount}</p>
+			<p class="mt-1 text-sm text-slate-500">Verified Users</p>
 		</div>
 
-		<div class="rounded-xl border border-gray-200 bg-white p-5">
-			<div class="mb-2 flex items-center gap-3">
-				<div class="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-50">
+		<!-- Admins -->
+		<div class="rounded-2xl border border-slate-200 border-t-4 border-t-slate-500 bg-white p-6 shadow-sm">
+			<div class="mb-3 flex items-center gap-3">
+				<div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke-width="1.5"
 						stroke="currentColor"
-						class="h-5 w-5 text-purple-600"
+						class="h-5 w-5 text-white"
 					>
 						<path
 							stroke-linecap="round"
@@ -103,20 +106,21 @@
 					</svg>
 				</div>
 			</div>
-			<p class="text-2xl font-bold text-gray-900">{data.stats.adminCount}</p>
-			<p class="text-sm text-gray-500">Admins</p>
+			<p class="text-3xl font-bold text-slate-900">{data.stats.adminCount}</p>
+			<p class="mt-1 text-sm text-slate-500">Admins</p>
 		</div>
 
-		<div class="rounded-xl border border-gray-200 bg-white p-5">
-			<div class="mb-2 flex items-center gap-3">
-				<div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50">
+		<!-- Last 7 Days -->
+		<div class="rounded-2xl border border-slate-200 border-t-4 border-t-lime-400 bg-white p-6 shadow-sm">
+			<div class="mb-3 flex items-center gap-3">
+				<div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-700">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke-width="1.5"
 						stroke="currentColor"
-						class="h-5 w-5 text-blue-600"
+						class="h-5 w-5 text-white"
 					>
 						<path
 							stroke-linecap="round"
@@ -126,49 +130,49 @@
 					</svg>
 				</div>
 			</div>
-			<p class="text-2xl font-bold text-gray-900">{data.stats.recentSignups}</p>
-			<p class="text-sm text-gray-500">Last 7 Days</p>
+			<p class="text-3xl font-bold text-slate-900">{data.stats.recentSignups}</p>
+			<p class="mt-1 text-sm text-slate-500">Last 7 Days</p>
 		</div>
 	</div>
 
 	<!-- Users Table -->
-	<div class="overflow-hidden rounded-xl border border-gray-200 bg-white">
-		<div class="border-b border-gray-200 px-6 py-4">
-			<h2 class="text-lg font-semibold text-gray-900">All Users</h2>
+	<div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+		<div class="bg-slate-900 px-6 py-5">
+			<h2 class="text-lg font-semibold text-white">All Users</h2>
 		</div>
 
 		<!-- Desktop table -->
 		<div class="hidden overflow-x-auto md:block">
 			<table class="w-full text-sm">
-				<thead class="bg-gray-50 text-left text-gray-500">
+				<thead class="bg-slate-900 text-left text-white">
 					<tr>
-						<th class="px-6 py-3 font-medium">Name</th>
-						<th class="px-6 py-3 font-medium">Email</th>
-						<th class="px-6 py-3 font-medium">Role</th>
-						<th class="px-6 py-3 font-medium">Verified</th>
-						<th class="px-6 py-3 font-medium">Status</th>
-						<th class="px-6 py-3 font-medium">Joined</th>
-						<th class="px-6 py-3 text-right font-medium">Actions</th>
+						<th class="px-6 py-3.5 text-xs font-semibold uppercase tracking-wide">Name</th>
+						<th class="px-6 py-3.5 text-xs font-semibold uppercase tracking-wide">Email</th>
+						<th class="px-6 py-3.5 text-xs font-semibold uppercase tracking-wide">Role</th>
+						<th class="px-6 py-3.5 text-xs font-semibold uppercase tracking-wide">Verified</th>
+						<th class="px-6 py-3.5 text-xs font-semibold uppercase tracking-wide">Status</th>
+						<th class="px-6 py-3.5 text-xs font-semibold uppercase tracking-wide">Joined</th>
+						<th class="px-6 py-3.5 text-right text-xs font-semibold uppercase tracking-wide">Actions</th>
 					</tr>
 				</thead>
-				<tbody class="divide-y divide-gray-100">
+				<tbody class="divide-y divide-slate-100">
 					{#each data.allUsers as user}
-						<tr class="transition hover:bg-gray-50 {user.disabled === 'true' ? 'opacity-60' : ''}">
-							<td class="px-6 py-4 font-medium text-gray-900">{user.name || '—'}</td>
-							<td class="px-6 py-4 text-gray-600">{user.email}</td>
+						<tr class="transition hover:bg-slate-50 {user.disabled === 'true' ? 'opacity-50' : ''}">
+							<td class="px-6 py-4 font-medium text-slate-900">{user.name || '\u2014'}</td>
+							<td class="px-6 py-4 text-slate-600">{user.email}</td>
 							<td class="px-6 py-4">
 								<span
-									class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {user.role ===
+									class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold {user.role ===
 									'admin'
-										? 'bg-purple-100 text-purple-700'
-										: 'bg-gray-100 text-gray-700'}"
+										? 'bg-lime-100 text-lime-700'
+										: 'bg-slate-100 text-slate-700'}"
 								>
 									{user.role}
 								</span>
 							</td>
 							<td class="px-6 py-4">
 								{#if user.emailVerified}
-									<span class="inline-flex items-center gap-1 text-green-600">
+									<span class="inline-flex items-center gap-1.5 text-emerald-600">
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											fill="none"
@@ -186,20 +190,20 @@
 										Yes
 									</span>
 								{:else}
-									<span class="text-gray-400">No</span>
+									<span class="text-slate-400">No</span>
 								{/if}
 							</td>
 							<td class="px-6 py-4">
 								<span
-									class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {user.disabled ===
+									class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold {user.disabled ===
 									'true'
 										? 'bg-red-100 text-red-700'
-										: 'bg-green-100 text-green-700'}"
+										: 'bg-emerald-100 text-emerald-700'}"
 								>
 									{user.disabled === 'true' ? 'Disabled' : 'Active'}
 								</span>
 							</td>
-							<td class="px-6 py-4 text-gray-500">{formatDate(user.createdAt)}</td>
+							<td class="px-6 py-4 text-slate-500">{formatDate(user.createdAt)}</td>
 							<td class="px-6 py-4 text-right">
 								<div class="flex items-center justify-end gap-2">
 									<!-- Toggle Role -->
@@ -214,8 +218,8 @@
 											type="submit"
 											class="rounded-lg border px-3 py-1.5 text-xs font-medium transition {user.role ===
 											'admin'
-												? 'border-purple-200 text-purple-700 hover:bg-purple-50'
-												: 'border-gray-200 text-gray-700 hover:bg-gray-50'}"
+												? 'border-lime-200 text-lime-700 hover:bg-lime-50'
+												: 'border-slate-200 text-slate-700 hover:bg-slate-50'}"
 											title={user.role === 'admin' ? 'Demote to user' : 'Promote to admin'}
 										>
 											{user.role === 'admin' ? 'Demote' : 'Promote'}
@@ -230,7 +234,7 @@
 											type="submit"
 											class="rounded-lg border px-3 py-1.5 text-xs font-medium transition {user.disabled ===
 											'true'
-												? 'border-green-200 text-green-700 hover:bg-green-50'
+												? 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
 												: 'border-red-200 text-red-700 hover:bg-red-50'}"
 											title={user.disabled === 'true' ? 'Enable account' : 'Disable account'}
 										>
@@ -246,36 +250,36 @@
 		</div>
 
 		<!-- Mobile cards -->
-		<div class="divide-y divide-gray-100 md:hidden">
+		<div class="divide-y divide-slate-100 md:hidden">
 			{#each data.allUsers as user}
-				<div class="space-y-3 p-4 {user.disabled === 'true' ? 'opacity-60' : ''}">
+				<div class="space-y-3 p-5 {user.disabled === 'true' ? 'opacity-50' : ''}">
 					<div class="flex items-center justify-between">
 						<div>
-							<p class="font-medium text-gray-900">{user.name || '—'}</p>
-							<p class="text-sm text-gray-500">{user.email}</p>
+							<p class="font-medium text-slate-900">{user.name || '\u2014'}</p>
+							<p class="mt-0.5 text-sm text-slate-500">{user.email}</p>
 						</div>
 						<span
-							class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {user.role ===
+							class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold {user.role ===
 							'admin'
-								? 'bg-purple-100 text-purple-700'
-								: 'bg-gray-100 text-gray-700'}"
+								? 'bg-lime-100 text-lime-700'
+								: 'bg-slate-100 text-slate-700'}"
 						>
 							{user.role}
 						</span>
 					</div>
-					<div class="flex items-center gap-4 text-xs text-gray-500">
+					<div class="flex items-center gap-4 text-xs text-slate-500">
 						<span class="flex items-center gap-1">
 							{#if user.emailVerified}
-								<span class="text-green-600">Verified</span>
+								<span class="font-medium text-emerald-600">Verified</span>
 							{:else}
-								<span class="text-gray-400">Unverified</span>
+								<span class="text-slate-400">Unverified</span>
 							{/if}
 						</span>
 						<span
-							class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium {user.disabled ===
+							class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold {user.disabled ===
 							'true'
 								? 'bg-red-100 text-red-700'
-								: 'bg-green-100 text-green-700'}"
+								: 'bg-emerald-100 text-emerald-700'}"
 						>
 							{user.disabled === 'true' ? 'Disabled' : 'Active'}
 						</span>
@@ -289,8 +293,8 @@
 								type="submit"
 								class="rounded-lg border px-3 py-1.5 text-xs font-medium transition {user.role ===
 								'admin'
-									? 'border-purple-200 text-purple-700 hover:bg-purple-50'
-									: 'border-gray-200 text-gray-700 hover:bg-gray-50'}"
+									? 'border-lime-200 text-lime-700 hover:bg-lime-50'
+									: 'border-slate-200 text-slate-700 hover:bg-slate-50'}"
 							>
 								{user.role === 'admin' ? 'Demote' : 'Promote'}
 							</button>
@@ -302,7 +306,7 @@
 								type="submit"
 								class="rounded-lg border px-3 py-1.5 text-xs font-medium transition {user.disabled ===
 								'true'
-									? 'border-green-200 text-green-700 hover:bg-green-50'
+									? 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
 									: 'border-red-200 text-red-700 hover:bg-red-50'}"
 							>
 								{user.disabled === 'true' ? 'Enable' : 'Disable'}

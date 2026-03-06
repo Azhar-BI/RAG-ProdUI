@@ -17,30 +17,39 @@
 	}
 </script>
 
-<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+<div class="min-h-screen bg-slate-100">
 	<!-- Navbar -->
-	<nav class="fixed top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md">
+	<nav class="fixed top-0 z-50 w-full border-b border-slate-700 bg-slate-900 shadow-lg shadow-slate-900/30">
 		<div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-6">
 			<div class="flex items-center gap-8">
 				<a href="/" class="text-xl font-bold tracking-tight">
-					<span class="text-black">Auth</span><span class="text-gray-500">Flow</span>
+					<span class="text-white">Auth</span><span class="text-lime-400">Flow</span>
 				</a>
 				<div class="hidden items-center gap-1 text-sm sm:flex">
 					<a
 						href="/dashboard"
 						class="rounded-lg px-3 py-1.5 font-medium transition {$page.url.pathname ===
 						'/dashboard'
-							? 'bg-gray-100 text-black'
-							: 'text-gray-500 hover:bg-gray-50 hover:text-black'}"
+							? 'bg-lime-500/20 text-lime-400'
+							: 'text-slate-300 hover:bg-white/10 hover:text-white'}"
 					>
 						Dashboard
+					</a>
+					<a
+						href="/dashboard/chat"
+						class="rounded-lg px-3 py-1.5 font-medium transition {$page.url.pathname ===
+						'/dashboard/chat'
+							? 'bg-lime-500/20 text-lime-400'
+							: 'text-slate-300 hover:bg-white/10 hover:text-white'}"
+					>
+						Chat
 					</a>
 					<a
 						href="/dashboard/profile"
 						class="rounded-lg px-3 py-1.5 font-medium transition {$page.url.pathname ===
 						'/dashboard/profile'
-							? 'bg-gray-100 text-black'
-							: 'text-gray-500 hover:bg-gray-50 hover:text-black'}"
+							? 'bg-lime-500/20 text-lime-400'
+							: 'text-slate-300 hover:bg-white/10 hover:text-white'}"
 					>
 						Profile
 					</a>
@@ -49,8 +58,8 @@
 							href="/dashboard/admin"
 							class="rounded-lg px-3 py-1.5 font-medium transition {$page.url.pathname ===
 							('/dashboard/admin' as string)
-								? 'bg-gray-100 text-black'
-								: 'text-gray-500 hover:bg-gray-50 hover:text-black'}"
+								? 'bg-lime-500/20 text-lime-400'
+								: 'text-slate-300 hover:bg-white/10 hover:text-white'}"
 						>
 							Admin
 						</a>
@@ -62,7 +71,7 @@
 					<form method="POST" action="/logout" class="hidden sm:block">
 						<button
 							type="submit"
-							class="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
+							class="rounded-lg bg-lime-500 px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:bg-lime-400"
 						>
 							Logout
 						</button>
@@ -70,7 +79,7 @@
 
 					<!-- Mobile hamburger button -->
 					<button
-						class="flex h-10 w-10 flex-col items-center justify-center rounded-lg transition hover:bg-gray-100 sm:hidden"
+						class="flex h-10 w-10 flex-col items-center justify-center rounded-lg text-slate-300 transition hover:bg-white/10 hover:text-white sm:hidden"
 						onclick={() => (mobileMenuOpen = !mobileMenuOpen)}
 						aria-label="Toggle menu"
 					>
@@ -118,21 +127,23 @@
 			></button>
 
 			<!-- Menu panel -->
-			<div class="absolute top-0 right-0 flex h-full w-72 flex-col bg-white shadow-2xl">
-				<div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+			<div class="absolute top-0 right-0 flex h-full w-72 flex-col bg-slate-900 shadow-2xl">
+				<div class="flex items-center justify-between border-b border-slate-700 px-6 py-4">
 					<div class="flex items-center gap-3">
 						<div
-							class="flex h-8 w-8 items-center justify-center rounded-full bg-black text-xs font-semibold text-white"
+							class="flex h-8 w-8 items-center justify-center rounded-full border border-lime-500/30 bg-slate-800 text-xs font-semibold text-white"
 						>
 							{getInitials(data.user?.name, data.user?.email)}
 						</div>
 						<div class="min-w-0">
-							<p class="truncate text-sm font-medium text-gray-900">{data.user?.name || 'User'}</p>
-							<p class="truncate text-xs text-gray-500">{data.user?.email}</p>
+							<p class="truncate text-sm font-medium text-white">
+								{data.user?.name || 'User'}
+							</p>
+							<p class="truncate text-xs text-slate-400">{data.user?.email}</p>
 						</div>
 					</div>
 					<button
-						class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg transition hover:bg-gray-100"
+						class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-white/10 hover:text-white"
 						onclick={() => (mobileMenuOpen = false)}
 						aria-label="Close menu"
 					>
@@ -152,9 +163,10 @@
 				<nav class="flex flex-col gap-1 px-6 py-6">
 					<a
 						href="/dashboard"
-						class="rounded-xl px-4 py-3 font-medium transition {$page.url.pathname === '/dashboard'
-							? 'bg-gray-100 text-black'
-							: 'text-gray-700 hover:bg-gray-50 hover:text-black'}"
+						class="rounded-xl px-4 py-3 font-medium transition {$page.url.pathname ===
+						'/dashboard'
+							? 'bg-lime-500/20 text-lime-400'
+							: 'text-slate-300 hover:bg-white/10 hover:text-white'}"
 						onclick={() => (mobileMenuOpen = false)}
 					>
 						<span class="flex items-center gap-3">
@@ -164,7 +176,7 @@
 								viewBox="0 0 24 24"
 								stroke-width="1.5"
 								stroke="currentColor"
-								class="h-5 w-5"
+								class="h-5 w-5 {$page.url.pathname === '/dashboard' ? 'text-lime-400' : ''}"
 							>
 								<path
 									stroke-linecap="round"
@@ -176,11 +188,11 @@
 						</span>
 					</a>
 					<a
-						href="/dashboard/profile"
+						href="/dashboard/chat"
 						class="rounded-xl px-4 py-3 font-medium transition {$page.url.pathname ===
-						'/dashboard/profile'
-							? 'bg-gray-100 text-black'
-							: 'text-gray-700 hover:bg-gray-50 hover:text-black'}"
+						'/dashboard/chat'
+							? 'bg-lime-500/20 text-lime-400'
+							: 'text-slate-300 hover:bg-white/10 hover:text-white'}"
 						onclick={() => (mobileMenuOpen = false)}
 					>
 						<span class="flex items-center gap-3">
@@ -190,7 +202,33 @@
 								viewBox="0 0 24 24"
 								stroke-width="1.5"
 								stroke="currentColor"
-								class="h-5 w-5"
+								class="h-5 w-5 {$page.url.pathname === '/dashboard/chat' ? 'text-lime-400' : ''}"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"
+								/>
+							</svg>
+							AI Chat
+						</span>
+					</a>
+					<a
+						href="/dashboard/profile"
+						class="rounded-xl px-4 py-3 font-medium transition {$page.url.pathname ===
+						'/dashboard/profile'
+							? 'bg-lime-500/20 text-lime-400'
+							: 'text-slate-300 hover:bg-white/10 hover:text-white'}"
+						onclick={() => (mobileMenuOpen = false)}
+					>
+						<span class="flex items-center gap-3">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="1.5"
+								stroke="currentColor"
+								class="h-5 w-5 {$page.url.pathname === '/dashboard/profile' ? 'text-lime-400' : ''}"
 							>
 								<path
 									stroke-linecap="round"
@@ -206,8 +244,8 @@
 							href="/dashboard/admin"
 							class="rounded-xl px-4 py-3 font-medium transition {$page.url.pathname ===
 							('/dashboard/admin' as string)
-								? 'bg-gray-100 text-black'
-								: 'text-gray-700 hover:bg-gray-50 hover:text-black'}"
+								? 'bg-lime-500/20 text-lime-400'
+								: 'text-slate-300 hover:bg-white/10 hover:text-white'}"
 							onclick={() => (mobileMenuOpen = false)}
 						>
 							<span class="flex items-center gap-3">
@@ -217,7 +255,7 @@
 									viewBox="0 0 24 24"
 									stroke-width="1.5"
 									stroke="currentColor"
-									class="h-5 w-5"
+									class="h-5 w-5 {$page.url.pathname === ('/dashboard/admin' as string) ? 'text-lime-400' : ''}"
 								>
 									<path
 										stroke-linecap="round"
@@ -240,7 +278,7 @@
 					<form method="POST" action="/logout">
 						<button
 							type="submit"
-							class="w-full rounded-xl bg-black px-4 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+							class="w-full rounded-xl bg-lime-500 px-4 py-3 text-sm font-medium text-slate-900 transition hover:bg-lime-400"
 						>
 							Logout
 						</button>
@@ -251,15 +289,21 @@
 	{/if}
 
 	<!-- Content -->
-	<main class="mx-auto max-w-6xl px-4 pt-24 pb-12 md:px-6">
-		{@render children()}
-	</main>
+	{#if $page.url.pathname === '/dashboard/chat'}
+		<main class="pt-16">
+			{@render children()}
+		</main>
+	{:else}
+		<main class="mx-auto max-w-6xl px-4 pt-24 pb-12 md:px-6">
+			{@render children()}
+		</main>
+	{/if}
 
 	<!-- Floating AI Chat Button -->
 	{#if $page.url.pathname !== '/dashboard/chat'}
 		<a
 			href="/dashboard/chat"
-			class="fixed right-6 bottom-6 z-50 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/25 transition-all duration-200 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/30"
+			class="fixed right-6 bottom-6 z-50 flex h-14 w-14 items-center justify-center rounded-2xl bg-lime-500 shadow-lg shadow-lime-500/30 transition-all duration-200 hover:scale-105 hover:bg-lime-400 hover:shadow-xl hover:shadow-lime-500/40"
 			aria-label="Open AI Chat"
 		>
 			<svg
@@ -267,8 +311,8 @@
 				fill="none"
 				viewBox="0 0 24 24"
 				stroke-width="1.5"
-				stroke="white"
-				class="h-6 w-6"
+				stroke="currentColor"
+				class="h-6 w-6 text-slate-900"
 			>
 				<path
 					stroke-linecap="round"
