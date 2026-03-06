@@ -17,28 +17,38 @@
 </script>
 
 <div>
-	<div class="mb-8">
-		<h1 class="text-3xl font-bold text-gray-900">Edit Profile</h1>
-		<p class="mt-2 text-gray-500">Update your personal information.</p>
+	<!-- Page Header -->
+	<div class="mb-8 rounded-2xl bg-slate-900 p-6 text-white">
+		<div class="flex items-center gap-4">
+			<div
+				class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-lime-500 text-xl font-bold text-slate-900"
+			>
+				{getInitials(data.user?.name, data.user?.email)}
+			</div>
+			<div>
+				<h1 class="text-3xl font-bold">Edit Profile</h1>
+				<p class="mt-1 text-slate-400">Update your personal information.</p>
+			</div>
+		</div>
 	</div>
 
-	<div class="max-w-xl rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:p-8">
+	<div class="max-w-xl rounded-2xl border border-slate-200 border-t-4 border-t-lime-500 bg-white p-6 shadow-sm md:p-8">
 		<!-- Avatar and user info header -->
-		<div class="mb-6 flex items-center gap-4 border-b border-gray-100 pb-6">
+		<div class="mb-6 flex items-center gap-4 border-b border-slate-100 pb-6">
 			<div
-				class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-black text-xl font-bold text-white"
+				class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-lime-500 text-xl font-bold text-slate-900"
 			>
 				{getInitials(data.user?.name, data.user?.email)}
 			</div>
 			<div class="min-w-0">
-				<p class="truncate font-semibold text-gray-900">{data.user?.name || 'User'}</p>
-				<p class="truncate text-sm text-gray-500">{data.user?.email}</p>
+				<p class="truncate font-semibold text-slate-900">{data.user?.name || 'User'}</p>
+				<p class="truncate text-sm text-slate-500">{data.user?.email}</p>
 			</div>
 		</div>
 
 		{#if form?.success}
 			<div
-				class="mb-6 flex items-center gap-2 rounded-xl border border-green-200 bg-green-50 p-3 text-sm text-green-700"
+				class="mb-6 flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -82,19 +92,19 @@
 
 		<form method="POST" class="flex flex-col gap-5" use:enhance>
 			<div>
-				<label for="name" class="mb-1.5 block text-sm font-medium text-gray-700">Full Name</label>
+				<label for="name" class="mb-1.5 block text-sm font-medium text-slate-700">Full Name</label>
 				<input
 					id="name"
 					name="name"
 					type="text"
 					required
 					value={data.user?.name || ''}
-					class="w-full rounded-xl border border-gray-300 p-2.5 transition focus:border-transparent focus:ring-2 focus:ring-black focus:outline-none"
+					class="w-full rounded-xl border border-slate-200 p-2.5 transition focus:border-transparent focus:ring-2 focus:ring-lime-500 focus:outline-none"
 				/>
 			</div>
 
 			<div>
-				<label for="email" class="mb-1.5 block text-sm font-medium text-gray-700"
+				<label for="email" class="mb-1.5 block text-sm font-medium text-slate-700"
 					>Email Address</label
 				>
 				<input
@@ -103,13 +113,13 @@
 					type="email"
 					required
 					value={data.user?.email || ''}
-					class="w-full rounded-xl border border-gray-300 p-2.5 transition focus:border-transparent focus:ring-2 focus:ring-black focus:outline-none"
+					class="w-full rounded-xl border border-slate-200 p-2.5 transition focus:border-transparent focus:ring-2 focus:ring-lime-500 focus:outline-none"
 				/>
 			</div>
 
 			<button
 				type="submit"
-				class="flex items-center justify-center gap-2 rounded-xl bg-black py-3 font-medium text-white transition-all duration-200 hover:bg-gray-800"
+				class="flex items-center justify-center gap-2 rounded-xl bg-lime-500 py-3 font-medium text-slate-900 shadow-lg shadow-lime-500/25 transition-all duration-200 hover:bg-lime-400 hover:shadow-lime-500/40"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"

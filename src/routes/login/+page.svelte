@@ -9,18 +9,18 @@
 	let reset = $derived($page.url.searchParams.get('reset') === 'true');
 </script>
 
-<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+<div class="min-h-screen bg-slate-50">
 	<!-- Navbar -->
-	<nav class="fixed top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md">
+	<nav class="fixed top-0 z-50 w-full bg-white shadow-sm">
 		<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
 			<a href="/" class="text-xl font-bold tracking-tight">
-				<span class="text-black">Auth</span><span class="text-gray-500">Flow</span>
+				<span class="text-slate-900">Auth</span><span class="text-lime-500">Flow</span>
 			</a>
 			<div class="flex items-center gap-3">
-				<span class="hidden text-sm text-gray-500 sm:inline">Don't have an account?</span>
+				<span class="hidden text-sm text-slate-500 sm:inline">Don't have an account?</span>
 				<a
 					href="/register"
-					class="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
+					class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
 				>
 					Register
 				</a>
@@ -32,13 +32,19 @@
 	<div class="flex min-h-screen pt-16">
 		<!-- Left brand panel (hidden on mobile) -->
 		<div
-			class="relative sticky top-0 hidden h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 to-black md:flex md:w-[45%] lg:w-[42%]"
+			class="relative sticky top-0 hidden h-screen items-center justify-center overflow-hidden bg-slate-900 md:flex md:w-[45%] lg:w-[42%]"
 		>
-			<div class="absolute inset-0 opacity-5">
-				<div class="absolute top-20 left-10 h-40 w-40 rounded-full border border-white"></div>
-				<div class="absolute right-8 bottom-32 h-64 w-64 rounded-full border border-white"></div>
-				<div class="absolute top-1/2 left-1/3 h-20 w-20 rounded-full border border-white"></div>
-			</div>
+			<!-- Decorative gradient orbs -->
+			<div
+				class="absolute top-20 left-10 h-72 w-72 rounded-full bg-lime-500/15 blur-3xl"
+			></div>
+			<div
+				class="absolute right-8 bottom-32 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl"
+			></div>
+			<div
+				class="absolute top-1/2 left-1/3 h-48 w-48 rounded-full bg-lime-500/10 blur-2xl"
+			></div>
+
 			<div
 				class="absolute inset-0 opacity-[0.03]"
 				style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;1&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"
@@ -64,11 +70,11 @@
 					</svg>
 				</div>
 				<h2 class="mb-4 text-3xl font-bold text-white lg:text-4xl">Welcome Back</h2>
-				<p class="mx-auto max-w-sm text-base leading-relaxed text-gray-400 lg:text-lg">
+				<p class="mx-auto max-w-sm text-base leading-relaxed text-slate-400 lg:text-lg">
 					Sign in to access your dashboard, manage your projects, and stay connected.
 				</p>
 				<div class="mt-10 flex justify-center gap-2">
-					<span class="h-1 w-8 rounded-full bg-white"></span>
+					<span class="h-1 w-8 rounded-full bg-lime-400"></span>
 					<span class="h-1 w-8 rounded-full bg-white/30"></span>
 					<span class="h-1 w-8 rounded-full bg-white/30"></span>
 				</div>
@@ -80,10 +86,10 @@
 			class="flex w-full items-center justify-center px-4 py-12 md:w-[55%] md:px-8 lg:w-[58%] lg:px-16"
 		>
 			<div class="w-full max-w-md">
-				<div class="rounded-2xl border border-gray-200 bg-white p-8 shadow-xl md:p-10">
+				<div class="rounded-2xl border border-slate-200 bg-white p-8 shadow-xl md:p-10">
 					<div class="mb-8 text-center">
 						<div
-							class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-black"
+							class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -100,8 +106,8 @@
 								/>
 							</svg>
 						</div>
-						<h1 class="text-3xl font-bold text-gray-900">Welcome Back</h1>
-						<p class="mt-2 text-sm text-gray-500">Login to your AuthFlow account.</p>
+						<h1 class="text-3xl font-bold text-slate-900">Welcome Back</h1>
+						<p class="mt-2 text-sm text-slate-400">Login to your AuthFlow account.</p>
 					</div>
 
 					{#if registered}
@@ -147,7 +153,7 @@
 							<button
 								onclick={() => signIn('google', { redirectTo: '/dashboard' })}
 								type="button"
-								class="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-300 px-4 py-2.5 font-medium text-gray-700 transition-all duration-200 hover:bg-gray-50"
+								class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 px-4 py-2.5 font-medium text-slate-700 transition-all duration-200 hover:bg-slate-50"
 							>
 								<svg class="h-5 w-5" viewBox="0 0 24 24">
 									<path
@@ -172,7 +178,7 @@
 							<button
 								onclick={() => signIn('github', { redirectTo: '/dashboard' })}
 								type="button"
-								class="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-300 px-4 py-2.5 font-medium text-gray-700 transition-all duration-200 hover:bg-gray-50"
+								class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 px-4 py-2.5 font-medium text-slate-700 transition-all duration-200 hover:bg-slate-50"
 							>
 								<svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
 									<path
@@ -187,29 +193,29 @@
 					<!-- Divider -->
 					<div class="relative mb-6">
 						<div class="absolute inset-0 flex items-center">
-							<div class="w-full border-t border-gray-200"></div>
+							<div class="w-full border-t border-slate-200"></div>
 						</div>
 						<div class="relative flex justify-center text-sm">
-							<span class="bg-white px-4 text-gray-400">or continue with email</span>
+							<span class="bg-white px-4 text-slate-400">or continue with email</span>
 						</div>
 					</div>
 
 					<form method="POST" action="?/credentials" class="flex flex-col gap-5" use:enhance>
 						<div>
-							<label for="email" class="mb-1.5 block text-sm font-medium text-gray-700">Email</label
+							<label for="email" class="mb-1.5 block text-sm font-medium text-slate-700">Email</label
 							>
 							<input
 								id="email"
 								name="email"
 								type="email"
 								required
-								class="w-full rounded-xl border border-gray-300 p-2.5 transition focus:border-transparent focus:ring-2 focus:ring-black focus:outline-none"
+								class="w-full rounded-xl border border-slate-200 p-2.5 transition focus:border-transparent focus:ring-2 focus:ring-lime-500 focus:outline-none"
 								placeholder="you@example.com"
 							/>
 						</div>
 
 						<div>
-							<label for="password" class="mb-1.5 block text-sm font-medium text-gray-700"
+							<label for="password" class="mb-1.5 block text-sm font-medium text-slate-700"
 								>Password</label
 							>
 							<input
@@ -217,7 +223,7 @@
 								name="password"
 								type="password"
 								required
-								class="w-full rounded-xl border border-gray-300 p-2.5 transition focus:border-transparent focus:ring-2 focus:ring-black focus:outline-none"
+								class="w-full rounded-xl border border-slate-200 p-2.5 transition focus:border-transparent focus:ring-2 focus:ring-lime-500 focus:outline-none"
 								placeholder="Enter your password"
 							/>
 						</div>
@@ -232,20 +238,22 @@
 
 						<button
 							type="submit"
-							class="rounded-xl bg-black py-3 font-medium text-white transition-all duration-200 hover:bg-gray-800"
+							class="rounded-xl bg-slate-900 py-3 font-medium text-white transition-all duration-200 hover:bg-slate-800"
 						>
 							Login
 						</button>
 
-						<div class="text-center text-sm text-gray-500">
-							<a href="/forgot-password" class="font-medium text-black hover:underline"
+						<div class="text-center text-sm text-slate-400">
+							<a href="/forgot-password" class="font-medium text-lime-600 hover:text-lime-700"
 								>Forgot Password?</a
 							>
 						</div>
 
-						<p class="text-center text-sm text-gray-500">
+						<p class="text-center text-sm text-slate-400">
 							Don't have an account?
-							<a href="/register" class="font-medium text-black hover:underline">Register</a>
+							<a href="/register" class="font-medium text-lime-600 hover:text-lime-700"
+								>Register</a
+							>
 						</p>
 					</form>
 				</div>
