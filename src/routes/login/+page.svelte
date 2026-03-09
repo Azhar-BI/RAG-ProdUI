@@ -35,15 +35,11 @@
 			class="relative sticky top-0 hidden h-screen items-center justify-center overflow-hidden bg-slate-900 md:flex md:w-[45%] lg:w-[42%]"
 		>
 			<!-- Decorative gradient orbs -->
-			<div
-				class="absolute top-20 left-10 h-72 w-72 rounded-full bg-lime-500/15 blur-3xl"
-			></div>
+			<div class="absolute top-20 left-10 h-72 w-72 rounded-full bg-lime-500/15 blur-3xl"></div>
 			<div
 				class="absolute right-8 bottom-32 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl"
 			></div>
-			<div
-				class="absolute top-1/2 left-1/3 h-48 w-48 rounded-full bg-lime-500/10 blur-2xl"
-			></div>
+			<div class="absolute top-1/2 left-1/3 h-48 w-48 rounded-full bg-lime-500/10 blur-2xl"></div>
 
 			<div
 				class="absolute inset-0 opacity-[0.03]"
@@ -202,7 +198,8 @@
 
 					<form method="POST" action="?/credentials" class="flex flex-col gap-5" use:enhance>
 						<div>
-							<label for="email" class="mb-1.5 block text-sm font-medium text-slate-700">Email</label
+							<label for="email" class="mb-1.5 block text-sm font-medium text-slate-700"
+								>Email</label
 							>
 							<input
 								id="email"
@@ -251,9 +248,7 @@
 
 						<p class="text-center text-sm text-slate-400">
 							Don't have an account?
-							<a href="/register" class="font-medium text-lime-600 hover:text-lime-700"
-								>Register</a
-							>
+							<a href="/register" class="font-medium text-lime-600 hover:text-lime-700">Register</a>
 						</p>
 					</form>
 				</div>

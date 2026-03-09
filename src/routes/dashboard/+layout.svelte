@@ -19,7 +19,9 @@
 
 <div class="min-h-screen bg-slate-100">
 	<!-- Navbar -->
-	<nav class="fixed top-0 z-50 w-full border-b border-slate-700 bg-slate-900 shadow-lg shadow-slate-900/30">
+	<nav
+		class="fixed top-0 z-50 w-full border-b border-slate-700 bg-slate-900 shadow-lg shadow-slate-900/30"
+	>
 		<div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-6">
 			<div class="flex items-center gap-8">
 				<a href="/" class="text-xl font-bold tracking-tight">
@@ -163,8 +165,7 @@
 				<nav class="flex flex-col gap-1 px-6 py-6">
 					<a
 						href="/dashboard"
-						class="rounded-xl px-4 py-3 font-medium transition {$page.url.pathname ===
-						'/dashboard'
+						class="rounded-xl px-4 py-3 font-medium transition {$page.url.pathname === '/dashboard'
 							? 'bg-lime-500/20 text-lime-400'
 							: 'text-slate-300 hover:bg-white/10 hover:text-white'}"
 						onclick={() => (mobileMenuOpen = false)}
@@ -255,7 +256,9 @@
 									viewBox="0 0 24 24"
 									stroke-width="1.5"
 									stroke="currentColor"
-									class="h-5 w-5 {$page.url.pathname === ('/dashboard/admin' as string) ? 'text-lime-400' : ''}"
+									class="h-5 w-5 {$page.url.pathname === ('/dashboard/admin' as string)
+										? 'text-lime-400'
+										: ''}"
 								>
 									<path
 										stroke-linecap="round"

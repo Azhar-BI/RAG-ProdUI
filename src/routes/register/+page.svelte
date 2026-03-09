@@ -32,8 +32,12 @@
 		>
 			<!-- Decorative gradient orbs -->
 			<div class="absolute top-1/4 left-1/4 h-64 w-64 rounded-full bg-lime-500/15 blur-3xl"></div>
-			<div class="absolute right-1/4 bottom-1/4 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl"></div>
-			<div class="absolute top-1/2 left-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime-500/10 blur-3xl"></div>
+			<div
+				class="absolute right-1/4 bottom-1/4 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl"
+			></div>
+			<div
+				class="absolute top-1/2 left-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime-500/10 blur-3xl"
+			></div>
 
 			<div
 				class="absolute inset-0 opacity-[0.03]"
@@ -96,8 +100,12 @@
 								/>
 							</svg>
 						</div>
-						<h1 class="text-3xl font-bold text-slate-900">Join <span class="text-slate-900">Auth</span><span class="text-lime-500">Flow</span></h1>
-						<p class="mt-2 text-sm text-slate-500">Create your account to access secure services.</p>
+						<h1 class="text-3xl font-bold text-slate-900">
+							Join <span class="text-slate-900">Auth</span><span class="text-lime-500">Flow</span>
+						</h1>
+						<p class="mt-2 text-sm text-slate-500">
+							Create your account to access secure services.
+						</p>
 					</div>
 
 					{#if data.hasUnverifiedSession}
