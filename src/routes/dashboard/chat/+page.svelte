@@ -647,9 +647,7 @@
 					<div class="mb-3 flex items-center justify-between">
 						<div>
 							<h3 class="text-sm font-semibold text-slate-200">Knowledge Base</h3>
-							<p class="text-[11px] text-slate-500">
-								Upload documents for context-aware answers
-							</p>
+							<p class="text-[11px] text-slate-500">Upload documents for context-aware answers</p>
 						</div>
 						<div class="flex items-center gap-2">
 							<button
@@ -675,7 +673,9 @@
 					{/if}
 					{#if userDocuments.length === 0}
 						<div class="rounded-lg border-2 border-dashed border-slate-600 px-4 py-5 text-center">
-							<p class="text-xs text-slate-500">No documents yet. Upload .txt files to enable RAG.</p>
+							<p class="text-xs text-slate-500">
+								No documents yet. Upload .txt files to enable RAG.
+							</p>
 						</div>
 					{:else}
 						<div class="max-h-32 space-y-1 overflow-y-auto">
@@ -737,9 +737,7 @@
 			{#if activePath.length === 0}
 				<!-- Empty state: centered like ChatGPT -->
 				<div class="flex h-full flex-col items-center justify-center px-4">
-					<div
-						class="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-lime-500"
-					>
+					<div class="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-lime-500">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"
@@ -890,9 +888,7 @@
 								citations={msg.citations}
 								showActions={!isLastAndLoading}
 								onEdit={msg.role === 'user' ? () => startEdit(msg) : undefined}
-								onRegenerate={msg.role === 'assistant'
-									? () => regenerateResponse(msg)
-									: undefined}
+								onRegenerate={msg.role === 'assistant' ? () => regenerateResponse(msg) : undefined}
 							/>
 						{/if}
 					{/each}
@@ -955,24 +951,42 @@
 					oninput={autoResize}
 					placeholder="Ask anything"
 					rows="1"
-					class="w-full resize-none rounded-3xl bg-transparent pr-5 pl-14 pt-3.5 pb-12 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none"
+					class="w-full resize-none rounded-3xl bg-transparent pt-3.5 pr-5 pb-12 pl-14 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none"
 					aria-label="Chat message input"
 				></textarea>
 				<!-- + button (upload document) on left like ChatGPT -->
 				<button
 					onclick={() => fileInput.click()}
 					disabled={uploading}
-					class="absolute left-3 bottom-2.5 flex h-8 w-8 items-center justify-center rounded-full border border-slate-600 text-slate-400 transition hover:border-slate-500 hover:bg-slate-700 hover:text-slate-200 disabled:opacity-50"
+					class="absolute bottom-2.5 left-3 flex h-8 w-8 items-center justify-center rounded-full border border-slate-600 text-slate-400 transition hover:border-slate-500 hover:bg-slate-700 hover:text-slate-200 disabled:opacity-50"
 					title="Upload document"
 					aria-label="Upload document"
 				>
 					{#if uploading}
 						<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-							<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-							<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+							<circle
+								class="opacity-25"
+								cx="12"
+								cy="12"
+								r="10"
+								stroke="currentColor"
+								stroke-width="4"
+							></circle>
+							<path
+								class="opacity-75"
+								fill="currentColor"
+								d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+							></path>
 						</svg>
 					{:else}
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="2"
+							stroke="currentColor"
+							class="h-4 w-4"
+						>
 							<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
 						</svg>
 					{/if}
@@ -984,8 +998,9 @@
 					<button
 						onclick={sendMessage}
 						disabled={loading || !input.trim()}
-						class="flex h-8 w-8 items-center justify-center rounded-full transition {loading || !input.trim()
-							? 'bg-slate-700 text-slate-500 cursor-not-allowed'
+						class="flex h-8 w-8 items-center justify-center rounded-full transition {loading ||
+						!input.trim()
+							? 'cursor-not-allowed bg-slate-700 text-slate-500'
 							: 'bg-lime-500 text-slate-900 hover:bg-lime-400'}"
 						aria-label="Send message"
 					>

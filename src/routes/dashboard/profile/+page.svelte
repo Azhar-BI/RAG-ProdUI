@@ -32,7 +32,9 @@
 		</div>
 	</div>
 
-	<div class="max-w-xl rounded-2xl border border-slate-200 border-t-4 border-t-lime-500 bg-white p-6 shadow-sm md:p-8">
+	<div
+		class="max-w-xl rounded-2xl border border-t-4 border-slate-200 border-t-lime-500 bg-white p-6 shadow-sm md:p-8"
+	>
 		<!-- Avatar and user info header -->
 		<div class="mb-6 flex items-center gap-4 border-b border-slate-100 pb-6">
 			<div

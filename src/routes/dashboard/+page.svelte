@@ -30,7 +30,9 @@
 		<div
 			class="absolute top-0 right-0 h-40 w-40 translate-x-1/4 -translate-y-1/2 rounded-full bg-lime-500/10"
 		></div>
-		<div class="absolute right-20 bottom-0 h-24 w-24 translate-y-1/2 rounded-full bg-lime-500/5"></div>
+		<div
+			class="absolute right-20 bottom-0 h-24 w-24 translate-y-1/2 rounded-full bg-lime-500/5"
+		></div>
 
 		<div class="relative z-10 flex items-center gap-5">
 			<div
@@ -51,11 +53,9 @@
 	<div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
 		<!-- Name Card -->
 		<div
-			class="group rounded-2xl border border-slate-200 border-t-4 border-t-lime-500 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-lime-500/5"
+			class="group rounded-2xl border border-t-4 border-slate-200 border-t-lime-500 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-lime-500/5"
 		>
-			<div
-				class="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900"
-			>
+			<div class="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
@@ -77,11 +77,9 @@
 
 		<!-- Email Card -->
 		<div
-			class="group rounded-2xl border border-slate-200 border-t-4 border-t-lime-500 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-lime-500/5"
+			class="group rounded-2xl border border-t-4 border-slate-200 border-t-lime-500 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-lime-500/5"
 		>
-			<div
-				class="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800"
-			>
+			<div class="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
@@ -103,7 +101,7 @@
 
 		<!-- Verification Status Card -->
 		<div
-			class="group rounded-2xl border border-slate-200 border-t-4 border-t-lime-500 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-lime-500/5"
+			class="group rounded-2xl border border-t-4 border-slate-200 border-t-lime-500 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-lime-500/5"
 		>
 			<div
 				class="mb-4 flex h-10 w-10 items-center justify-center rounded-xl transition-colors duration-300 {data
@@ -344,12 +342,12 @@
 	</div>
 
 	<!-- Footer -->
-	<div
-		class="mt-8 overflow-hidden rounded-2xl bg-slate-900 px-6 py-4"
-	>
+	<div class="mt-8 overflow-hidden rounded-2xl bg-slate-900 px-6 py-4">
 		<div class="flex flex-col items-center justify-between gap-3 text-xs sm:flex-row">
 			<p class="text-slate-400">AuthFlow &mdash; Secure Authentication Platform</p>
-			<p class="text-slate-400">Logged in as <span class="font-medium text-lime-400">{data.user?.email}</span></p>
+			<p class="text-slate-400">
+				Logged in as <span class="font-medium text-lime-400">{data.user?.email}</span>
+			</p>
 		</div>
 	</div>
 </div>
