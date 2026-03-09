@@ -1,126 +1,64 @@
-# AuthFlow - Authentication App
+# RAG-ProdUI
 
-![CI](https://github.com/Azhar-BI/Auth-AI-Chat/actions/workflows/ci.yml/badge.svg)
+AI chat application with RAG (pgvector), Python embedding service, and ChatGPT-style UI. Built with SvelteKit, Auth.js, Drizzle ORM, and Google Gemini.
 
-A full-stack authentication application built with SvelteKit, Auth.js, Drizzle ORM, and PostgreSQL. Features email/password auth, Google & GitHub OAuth, email verification, password reset, admin dashboard with role management, and an AI-powered chat interface using Google Gemini.
-
----
-
-## Features
-
-- Auth.js with email/password credentials and database sessions (no JWT)
-- OAuth sign-in with Google and GitHub
-- Email verification during signup
-- Password reset via secure email link
-- Protected routes with auth guards
-- Profile management (view & update)
-- Admin dashboard with user analytics, role management, and account controls
-- AI chat interface with streaming responses (Vercel AI SDK + Gemini)
-- Responsive UI with TailwindCSS
-
----
-
-## Prerequisites
-
-- [Node.js](https://nodejs.org/) >= 18.x
-- [pnpm](https://pnpm.io/) >= 9.x
-- [Docker](https://www.docker.com/) (for PostgreSQL)
-- SMTP server for email (e.g., [Mailtrap](https://mailtrap.io/))
-
----
-
-## Getting Started
+## Setup
 
 ### 1. Clone and Install
 
 ```bash
-git clone https://github.com/Azhar-BI/Auth-AI-Chat.git
-cd Auth-AI-Chat
+git clone https://github.com/Azhar-BI/RAG-ProdUI.git
+cd RAG-ProdUI
 pnpm install
 ```
 
-### 2. Configure Environment Variables
+### 2. Configure Environment
 
 ```bash
 cp .env.example .env
 ```
 
-Fill in the required values in `.env`:
+Fill in all values in `.env` (DB, AUTH_SECRET, SMTP, OAuth, GEMINI_API_KEY, EMBEDDING_API_URL).
 
-| Variable                | Description                                |
-| ----------------------- | ------------------------------------------ |
-| `DATABASE_URL`          | PostgreSQL connection string               |
-| `AUTH_SECRET`           | Secret key for Auth.js session signing     |
-| `EMAIL_SERVER_HOST`     | SMTP server hostname                       |
-| `EMAIL_SERVER_PORT`     | SMTP server port (e.g., 2525 for Mailtrap) |
-| `EMAIL_SERVER_USER`     | SMTP username                              |
-| `EMAIL_SERVER_PASSWORD` | SMTP password                              |
-| `EMAIL_FROM`            | Sender email address                       |
-| `AUTH_GOOGLE_ID`        | Google OAuth client ID                     |
-| `AUTH_GOOGLE_SECRET`    | Google OAuth client secret                 |
-| `AUTH_GITHUB_ID`        | GitHub OAuth client ID                     |
-| `AUTH_GITHUB_SECRET`    | GitHub OAuth client secret                 |
-| `GEMINI_API_KEY`        | Google Gemini API key for AI chat          |
-
-### 3. Start the Database
+### 3. Start Docker Services
 
 ```bash
-pnpm db:start
+docker compose up -d
 ```
 
-This starts a PostgreSQL 16 container via Docker Compose.
+Starts pgvector DB (port 5433) and Python embedding service (port 8000).
 
-### 4. Push the Schema
+### 4. Push Schema & Seed
 
 ```bash
-pnpm db:push
+pnpm db:migrate
+pnpm db:seed
 ```
 
-### 5. Run the App
+### 5. Run
 
 ```bash
 pnpm dev
 ```
 
-The app will be available at [http://localhost:5173](http://localhost:5173).
+Visit [http://localhost:5173](http://localhost:5173)
 
----
-
-## Available Scripts
-
-| Script             | Description                       |
-| ------------------ | --------------------------------- |
-| `pnpm dev`         | Start development server          |
-| `pnpm build`       | Build for production              |
-| `pnpm preview`     | Preview production build          |
-| `pnpm check`       | Run svelte-check type checking    |
-| `pnpm lint`        | Check code formatting (Prettier)  |
-| `pnpm format`      | Auto-format code (Prettier)       |
-| `pnpm db:start`    | Start PostgreSQL (Docker Compose) |
-| `pnpm db:stop`     | Stop PostgreSQL                   |
-| `pnpm db:push`     | Push schema to database           |
-| `pnpm db:generate` | Generate Drizzle migrations       |
-| `pnpm db:studio`   | Open Drizzle Studio               |
-
----
-
-## Tech Stack
-
-- **Framework:** SvelteKit (Svelte 5)
-- **Styling:** TailwindCSS v4
-- **Auth:** Auth.js (SvelteKit) with database sessions
-- **Database:** PostgreSQL with Drizzle ORM
-- **Email:** Nodemailer
-- **AI:** Vercel AI SDK + Google Gemini
-- **CI:** GitHub Actions (lint, type-check, build)
-
----
+Verify: [/healthz](http://localhost:5173/healthz) and [/version](http://localhost:5173/version)
 
 ## Troubleshooting
 
-- **Docker not running:** Make sure Docker Desktop is started before running `pnpm db:start`.
-- **Port 5432 in use:** Stop any existing PostgreSQL instances or change the port in `docker-compose.yml`.
-- **Email not sending:** Double-check your SMTP credentials in `.env`. Mailtrap is recommended for development.
-- **OAuth not working:** Ensure your Google/GitHub OAuth app callback URLs are set to `http://localhost:5173/auth/callback/google` and `http://localhost:5173/auth/callback/github`.
-- **Build fails:** Run `pnpm check` to see type errors, and `pnpm lint` to check formatting.
-# RAG-ProdUI
+**ECONNREFUSED on startup** — Docker isn't running. Start Docker Desktop, then `docker compose up -d`.
+
+**Embedding service not reachable** — Check `docker compose logs embed-api`. Rebuild with `docker compose up -d --build embed-api`.
+
+**Document upload fails** — The Python embedding service must be running. Verify with `curl http://localhost:8000/health`.
+
+**RAG returns no context** — Upload documents first. Use content-related queries. Vague queries may not match.
+
+**Email not sending** — Check SMTP credentials in `.env`. For Gmail use an App Password. For dev use Mailtrap.
+
+**OAuth not working** — Set callback URLs: `http://localhost:5173/auth/callback/google` and `http://localhost:5173/auth/callback/github`.
+
+**Lint/build fails** — Run `pnpm format` to fix formatting, `pnpm check` for type errors.
+
+**Schema out of sync** — Run `pnpm db:migrate`.
