@@ -19,17 +19,23 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 		return new Response('Not found', { status: 404 });
 	}
 
-	const messages = await db
+	const rawMessages = await db
 		.select({
 			id: chatMessages.id,
 			parentId: chatMessages.parentId,
 			role: chatMessages.role,
 			content: chatMessages.content,
+			citations: chatMessages.citations,
 			createdAt: chatMessages.createdAt
 		})
 		.from(chatMessages)
 		.where(eq(chatMessages.conversationId, params.id))
 		.orderBy(asc(chatMessages.createdAt));
+
+	const messages = rawMessages.map((m) => ({
+		...m,
+		citations: m.citations ? JSON.parse(m.citations) : undefined
+	}));
 
 	return Response.json({ conversation, messages });
 };

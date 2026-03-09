@@ -139,7 +139,9 @@
 				{:else}
 					<!-- No bubble - just flowing text on dark bg like ChatGPT -->
 					<div class="prose-sm leading-relaxed text-slate-200">
-						<MarkdownRenderer {content} />
+						<MarkdownRenderer {content} />{#if loading}<span
+								class="ml-0.5 inline-block h-4 w-[3px] animate-pulse rounded-sm bg-lime-400 align-middle"
+							></span>{/if}
 					</div>
 				{/if}
 
