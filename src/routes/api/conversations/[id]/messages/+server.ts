@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
 		return new Response('Not found', { status: 404 });
 	}
 
-	const { role, content, parentId } = await request.json();
+	const { role, content, parentId, citations } = await request.json();
 
 	const [message] = await db
 		.insert(chatMessages)
@@ -27,15 +27,10 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
 			conversationId: params.id,
 			parentId: parentId || null,
 			role,
-			content
+			content,
+			citations: citations ? JSON.stringify(citations) : null
 		})
 		.returning();
-
-	// Update conversation title from first user message
-	if (role === 'user' && conversation.title === 'New Chat') {
-		const title = content.length > 50 ? content.slice(0, 50) + '...' : content;
-		await db.update(conversations).set({ title }).where(eq(conversations.id, params.id));
-	}
 
 	// Update conversation timestamp
 	await db

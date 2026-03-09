@@ -102,6 +102,7 @@ export const chatMessages = pgTable('chat_messages', {
 	parentId: uuid('parent_id'),
 	role: text('role').notNull(), // 'user' | 'assistant'
 	content: text('content').notNull(),
+	citations: text('citations'), // JSON string of citations array
 	createdAt: timestamp('created_at').defaultNow()
 });
 
