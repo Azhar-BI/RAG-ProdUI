@@ -19,7 +19,7 @@
 
 ## Project Overview
 
-AuthFlow is a full-stack authentication application built with SvelteKit. It implements Auth.js with database-backed sessions (no JWT), OAuth sign-in (Google & GitHub), email verification, password reset, role-based access control with an admin dashboard, and an AI-powered chat interface using the Vercel AI SDK with Google Gemini.
+AuthFlow is a full-stack authentication application built with SvelteKit. It implements Auth.js with database-backed sessions (no JWT), OAuth sign-in (Google & GitHub), email verification, password reset, role-based access control with a production-grade admin dashboard (analytics, charts, activity audit log), and an AI-powered RAG chat interface with tree-structured history using the Vercel AI SDK with Google Gemini.
 
 ---
 
