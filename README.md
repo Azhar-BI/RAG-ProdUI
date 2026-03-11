@@ -49,21 +49,21 @@ cp .env.example .env
 
 Fill in the required values in `.env`:
 
-| Variable                | Description                                |
-| ----------------------- | ------------------------------------------ |
-| `DATABASE_URL`          | PostgreSQL connection string               |
-| `AUTH_SECRET`           | Secret key for Auth.js session signing     |
-| `EMAIL_SERVER_HOST`     | SMTP server hostname                       |
-| `EMAIL_SERVER_PORT`     | SMTP server port (e.g., 2525 for Mailtrap) |
-| `EMAIL_SERVER_USER`     | SMTP username                              |
-| `EMAIL_SERVER_PASSWORD` | SMTP password                              |
-| `EMAIL_FROM`            | Sender email address                       |
-| `AUTH_GOOGLE_ID`        | Google OAuth client ID                     |
-| `AUTH_GOOGLE_SECRET`    | Google OAuth client secret                 |
-| `AUTH_GITHUB_ID`        | GitHub OAuth client ID                     |
-| `AUTH_GITHUB_SECRET`    | GitHub OAuth client secret                 |
-| `GEMINI_API_KEY`        | Google Gemini API key for AI chat          |
-| `AUTH_URL`              | App base URL (e.g., `http://localhost:5173`) |
+| Variable                | Description                                     |
+| ----------------------- | ----------------------------------------------- |
+| `DATABASE_URL`          | PostgreSQL connection string                    |
+| `AUTH_SECRET`           | Secret key for Auth.js session signing          |
+| `EMAIL_SERVER_HOST`     | SMTP server hostname                            |
+| `EMAIL_SERVER_PORT`     | SMTP server port (e.g., 2525 for Mailtrap)      |
+| `EMAIL_SERVER_USER`     | SMTP username                                   |
+| `EMAIL_SERVER_PASSWORD` | SMTP password                                   |
+| `EMAIL_FROM`            | Sender email address                            |
+| `AUTH_GOOGLE_ID`        | Google OAuth client ID                          |
+| `AUTH_GOOGLE_SECRET`    | Google OAuth client secret                      |
+| `AUTH_GITHUB_ID`        | GitHub OAuth client ID                          |
+| `AUTH_GITHUB_SECRET`    | GitHub OAuth client secret                      |
+| `GEMINI_API_KEY`        | Google Gemini API key for AI chat               |
+| `AUTH_URL`              | App base URL (e.g., `http://localhost:5173`)    |
 | `EMBEDDING_API_URL`     | Embedding service URL (`http://localhost:8000`) |
 
 ### 3. Start the Database and Embedding Service
