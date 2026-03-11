@@ -63,14 +63,16 @@ Fill in the required values in `.env`:
 | `AUTH_GITHUB_ID`        | GitHub OAuth client ID                     |
 | `AUTH_GITHUB_SECRET`    | GitHub OAuth client secret                 |
 | `GEMINI_API_KEY`        | Google Gemini API key for AI chat          |
+| `AUTH_URL`              | App base URL (e.g., `http://localhost:5173`) |
+| `EMBEDDING_API_URL`     | Embedding service URL (`http://localhost:8000`) |
 
-### 3. Start the Database
+### 3. Start the Database and Embedding Service
 
 ```bash
 pnpm db:start
 ```
 
-This starts a PostgreSQL 16 container via Docker Compose.
+This starts PostgreSQL 16 (with pgvector) and the Python embedding API via Docker Compose. The embedding service may take a minute on first run to download the model.
 
 ### 4. Push the Schema
 
@@ -102,6 +104,7 @@ The app will be available at [http://localhost:5173](http://localhost:5173).
 | `pnpm db:stop`     | Stop PostgreSQL                   |
 | `pnpm db:push`     | Push schema to database           |
 | `pnpm db:generate` | Generate Drizzle migrations       |
+| `pnpm db:seed`     | Seed database with sample data    |
 | `pnpm db:studio`   | Open Drizzle Studio               |
 
 ---
@@ -125,5 +128,3 @@ The app will be available at [http://localhost:5173](http://localhost:5173).
 - **Email not sending:** Double-check your SMTP credentials in `.env`. Mailtrap is recommended for development.
 - **OAuth not working:** Ensure your Google/GitHub OAuth app callback URLs are set to `http://localhost:5173/auth/callback/google` and `http://localhost:5173/auth/callback/github`.
 - **Build fails:** Run `pnpm check` to see type errors, and `pnpm lint` to check formatting.
-
-# RAG-ProdUI
