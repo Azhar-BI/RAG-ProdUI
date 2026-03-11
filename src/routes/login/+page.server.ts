@@ -1,7 +1,7 @@
 import type { PageServerLoad, Actions } from './$types';
 import { db } from '$lib/server/db';
-import { users, sessions } from '$lib/server/schema';
-import { eq } from 'drizzle-orm';
+import { users, sessions, activityLogs } from '$lib/server/schema';
+import { eq, sql } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { redirect, fail } from '@sveltejs/kit';
@@ -61,6 +61,18 @@ export const actions: Actions = {
 			sessionToken,
 			userId: user.id,
 			expires
+		});
+
+		// Track login activity
+		await db
+			.update(users)
+			.set({ lastLoginAt: new Date(), loginCount: sql`${users.loginCount} + 1` })
+			.where(eq(users.id, user.id));
+
+		await db.insert(activityLogs).values({
+			userId: user.id,
+			action: 'login',
+			metadata: { method: 'credentials' }
 		});
 
 		cookies.set('authjs.session-token', sessionToken, {

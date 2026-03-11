@@ -58,8 +58,9 @@
 					{#if data.role === 'admin'}
 						<a
 							href="/dashboard/admin"
-							class="rounded-lg px-3 py-1.5 font-medium transition {$page.url.pathname ===
-							('/dashboard/admin' as string)
+							class="rounded-lg px-3 py-1.5 font-medium transition {$page.url.pathname.startsWith(
+								'/dashboard/admin'
+							)
 								? 'bg-lime-500/20 text-lime-400'
 								: 'text-slate-300 hover:bg-white/10 hover:text-white'}"
 						>
@@ -243,8 +244,9 @@
 					{#if data.role === 'admin'}
 						<a
 							href="/dashboard/admin"
-							class="rounded-xl px-4 py-3 font-medium transition {$page.url.pathname ===
-							('/dashboard/admin' as string)
+							class="rounded-xl px-4 py-3 font-medium transition {$page.url.pathname.startsWith(
+								'/dashboard/admin'
+							)
 								? 'bg-lime-500/20 text-lime-400'
 								: 'text-slate-300 hover:bg-white/10 hover:text-white'}"
 							onclick={() => (mobileMenuOpen = false)}
@@ -256,7 +258,7 @@
 									viewBox="0 0 24 24"
 									stroke-width="1.5"
 									stroke="currentColor"
-									class="h-5 w-5 {$page.url.pathname === ('/dashboard/admin' as string)
+									class="h-5 w-5 {$page.url.pathname.startsWith('/dashboard/admin')
 										? 'text-lime-400'
 										: ''}"
 								>

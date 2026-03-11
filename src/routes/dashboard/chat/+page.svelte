@@ -343,7 +343,34 @@
 				branchSelections[parentId] = assistantMsg.id;
 				rebuildActivePath();
 			}
-			await loadConversations();
+			// Auto-generate title after first exchange
+			const userMessages = allMessages.filter((m) => m.role === 'user');
+			if (userMessages.length === 1 && activeConversationId) {
+				const firstUserMsg = userMessages[0].content;
+				try {
+					const titleRes = await fetch(
+						`/api/conversations/${activeConversationId}/generate-title`,
+						{
+							method: 'POST',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({
+								userMessage: firstUserMsg,
+								assistantMessage: assistantContent
+							})
+						}
+					);
+					if (titleRes.ok) {
+						const { title } = await titleRes.json();
+						conversationList = conversationList.map((c) =>
+							c.id === activeConversationId ? { ...c, title } : c
+						);
+					}
+				} catch {
+					/* silent — title generation is non-critical */
+				}
+			} else {
+				await loadConversations();
+			}
 		} catch (err: any) {
 			error = err.message || 'Something went wrong. Please try again.';
 			allMessages = allMessages.filter((m) => m.id !== placeholderId);
