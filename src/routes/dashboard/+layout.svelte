@@ -100,8 +100,8 @@
 								stroke-width="2"
 								stroke="currentColor"
 								class="h-6 w-6"
-							aria-hidden="true"
-						>
+								aria-hidden="true"
+							>
 								<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
 							</svg>
 						{:else}
@@ -112,8 +112,8 @@
 								stroke-width="2"
 								stroke="currentColor"
 								class="h-6 w-6"
-							aria-hidden="true"
-						>
+								aria-hidden="true"
+							>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"

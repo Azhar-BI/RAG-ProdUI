@@ -34,9 +34,7 @@ export async function retrieveContext(
 		.select({ count: sql<number>`count(*)` })
 		.from(documentChunks)
 		.innerJoin(documents, eq(documentChunks.documentId, documents.id))
-		.where(
-			and(eq(documents.userId, userId), sql`${documentChunks.embedding} IS NOT NULL`)
-		);
+		.where(and(eq(documents.userId, userId), sql`${documentChunks.embedding} IS NOT NULL`));
 
 	console.log(
 		`[RAG] User has ${totalChunks[0].count} total chunks, ${withEmbeddings[0].count} with embeddings`
@@ -52,12 +50,7 @@ export async function retrieveContext(
 		})
 		.from(documentChunks)
 		.innerJoin(documents, eq(documentChunks.documentId, documents.id))
-		.where(
-			and(
-				eq(documents.userId, userId),
-				sql`${documentChunks.embedding} IS NOT NULL`
-			)
-		)
+		.where(and(eq(documents.userId, userId), sql`${documentChunks.embedding} IS NOT NULL`))
 		.orderBy(sql`${documentChunks.embedding} <=> ${embeddingStr}::vector`)
 		.limit(topK);
 
@@ -65,7 +58,9 @@ export async function retrieveContext(
 	if (results.length > 0) {
 		console.log(`[RAG] Top results before threshold filter:`);
 		results.forEach((r, i) =>
-			console.log(`  [${i}] ${r.filename} chunk ${r.chunkIndex}: ${(r.similarity * 100).toFixed(1)}%`)
+			console.log(
+				`  [${i}] ${r.filename} chunk ${r.chunkIndex}: ${(r.similarity * 100).toFixed(1)}%`
+			)
 		);
 	}
 
