@@ -17,6 +17,12 @@
 	}
 </script>
 
+<svelte:window
+	onkeydown={(e) => {
+		if (e.key === 'Escape' && mobileMenuOpen) mobileMenuOpen = false;
+	}}
+/>
+
 <div class="min-h-screen bg-slate-100">
 	<!-- Navbar -->
 	<nav
@@ -94,7 +100,8 @@
 								stroke-width="2"
 								stroke="currentColor"
 								class="h-6 w-6"
-							>
+							aria-hidden="true"
+						>
 								<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
 							</svg>
 						{:else}
@@ -105,7 +112,8 @@
 								stroke-width="2"
 								stroke="currentColor"
 								class="h-6 w-6"
-							>
+							aria-hidden="true"
+						>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -157,6 +165,7 @@
 							stroke-width="2"
 							stroke="currentColor"
 							class="h-5 w-5"
+							aria-hidden="true"
 						>
 							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
 						</svg>
@@ -179,6 +188,7 @@
 								stroke-width="1.5"
 								stroke="currentColor"
 								class="h-5 w-5 {$page.url.pathname === '/dashboard' ? 'text-lime-400' : ''}"
+								aria-hidden="true"
 							>
 								<path
 									stroke-linecap="round"
@@ -205,6 +215,7 @@
 								stroke-width="1.5"
 								stroke="currentColor"
 								class="h-5 w-5 {$page.url.pathname === '/dashboard/chat' ? 'text-lime-400' : ''}"
+								aria-hidden="true"
 							>
 								<path
 									stroke-linecap="round"
@@ -231,6 +242,7 @@
 								stroke-width="1.5"
 								stroke="currentColor"
 								class="h-5 w-5 {$page.url.pathname === '/dashboard/profile' ? 'text-lime-400' : ''}"
+								aria-hidden="true"
 							>
 								<path
 									stroke-linecap="round"
@@ -261,6 +273,7 @@
 									class="h-5 w-5 {$page.url.pathname.startsWith('/dashboard/admin')
 										? 'text-lime-400'
 										: ''}"
+									aria-hidden="true"
 								>
 									<path
 										stroke-linecap="round"
@@ -318,6 +331,7 @@
 				stroke-width="1.5"
 				stroke="currentColor"
 				class="h-6 w-6 text-slate-900"
+				aria-hidden="true"
 			>
 				<path
 					stroke-linecap="round"

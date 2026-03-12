@@ -36,6 +36,7 @@
 	let confirmLabel = $state('Confirm');
 	let confirmVariant: 'danger' | 'warning' | 'info' = $state('danger');
 	let pendingForm: HTMLFormElement | null = $state(null);
+	let skipConfirm = $state(false);
 
 	function requestConfirm(
 		formEl: HTMLFormElement,
@@ -54,8 +55,10 @@
 
 	function handleConfirmed() {
 		if (pendingForm) {
-			pendingForm.requestSubmit();
+			const formEl = pendingForm;
 			pendingForm = null;
+			skipConfirm = true;
+			formEl.requestSubmit();
 		}
 	}
 
@@ -637,22 +640,24 @@
 										<form
 											method="POST"
 											action="?/changeRole"
-											use:enhance={() => {
+											use:enhance={({ formElement, cancel }) => {
+												if (!skipConfirm) {
+													cancel();
+													requestConfirm(
+														formElement,
+														user.role === 'admin' ? 'Demote Admin' : 'Promote to Admin',
+														user.role === 'admin'
+															? `Remove admin privileges from ${user.name || user.email}?`
+															: `Grant admin privileges to ${user.name || user.email}?`,
+														user.role === 'admin' ? 'Demote' : 'Promote',
+														user.role === 'admin' ? 'warning' : 'info'
+													);
+													return;
+												}
+												skipConfirm = false;
 												return async ({ update }) => {
 													await update();
 												};
-											}}
-											onsubmit={(e) => {
-												e.preventDefault();
-												requestConfirm(
-													e.currentTarget as HTMLFormElement,
-													user.role === 'admin' ? 'Demote Admin' : 'Promote to Admin',
-													user.role === 'admin'
-														? `Remove admin privileges from ${user.name || user.email}?`
-														: `Grant admin privileges to ${user.name || user.email}?`,
-													user.role === 'admin' ? 'Demote' : 'Promote',
-													user.role === 'admin' ? 'warning' : 'info'
-												);
 											}}
 										>
 											<input type="hidden" name="userId" value={user.id} />
@@ -677,22 +682,24 @@
 										<form
 											method="POST"
 											action="?/toggleDisabled"
-											use:enhance={() => {
+											use:enhance={({ formElement, cancel }) => {
+												if (!skipConfirm) {
+													cancel();
+													requestConfirm(
+														formElement,
+														user.disabled === 'true' ? 'Enable Account' : 'Disable Account',
+														user.disabled === 'true'
+															? `Re-enable the account for ${user.name || user.email}?`
+															: `Disable the account for ${user.name || user.email}? They will not be able to log in.`,
+														user.disabled === 'true' ? 'Enable' : 'Disable',
+														user.disabled === 'true' ? 'info' : 'danger'
+													);
+													return;
+												}
+												skipConfirm = false;
 												return async ({ update }) => {
 													await update();
 												};
-											}}
-											onsubmit={(e) => {
-												e.preventDefault();
-												requestConfirm(
-													e.currentTarget as HTMLFormElement,
-													user.disabled === 'true' ? 'Enable Account' : 'Disable Account',
-													user.disabled === 'true'
-														? `Re-enable the account for ${user.name || user.email}?`
-														: `Disable the account for ${user.name || user.email}? They will not be able to log in.`,
-													user.disabled === 'true' ? 'Enable' : 'Disable',
-													user.disabled === 'true' ? 'info' : 'danger'
-												);
 											}}
 										>
 											<input type="hidden" name="userId" value={user.id} />
@@ -782,18 +789,24 @@
 							<form
 								method="POST"
 								action="?/changeRole"
-								use:enhance
-								onsubmit={(e) => {
-									e.preventDefault();
-									requestConfirm(
-										e.currentTarget as HTMLFormElement,
-										user.role === 'admin' ? 'Demote Admin' : 'Promote to Admin',
-										user.role === 'admin'
-											? `Remove admin privileges from ${user.name || user.email}?`
-											: `Grant admin privileges to ${user.name || user.email}?`,
-										user.role === 'admin' ? 'Demote' : 'Promote',
-										user.role === 'admin' ? 'warning' : 'info'
-									);
+								use:enhance={({ formElement, cancel }) => {
+									if (!skipConfirm) {
+										cancel();
+										requestConfirm(
+											formElement,
+											user.role === 'admin' ? 'Demote Admin' : 'Promote to Admin',
+											user.role === 'admin'
+												? `Remove admin privileges from ${user.name || user.email}?`
+												: `Grant admin privileges to ${user.name || user.email}?`,
+											user.role === 'admin' ? 'Demote' : 'Promote',
+											user.role === 'admin' ? 'warning' : 'info'
+										);
+										return;
+									}
+									skipConfirm = false;
+									return async ({ update }) => {
+										await update();
+									};
 								}}
 							>
 								<input type="hidden" name="userId" value={user.id} />
@@ -811,18 +824,24 @@
 							<form
 								method="POST"
 								action="?/toggleDisabled"
-								use:enhance
-								onsubmit={(e) => {
-									e.preventDefault();
-									requestConfirm(
-										e.currentTarget as HTMLFormElement,
-										user.disabled === 'true' ? 'Enable Account' : 'Disable Account',
-										user.disabled === 'true'
-											? `Re-enable the account for ${user.name || user.email}?`
-											: `Disable the account for ${user.name || user.email}?`,
-										user.disabled === 'true' ? 'Enable' : 'Disable',
-										user.disabled === 'true' ? 'info' : 'danger'
-									);
+								use:enhance={({ formElement, cancel }) => {
+									if (!skipConfirm) {
+										cancel();
+										requestConfirm(
+											formElement,
+											user.disabled === 'true' ? 'Enable Account' : 'Disable Account',
+											user.disabled === 'true'
+												? `Re-enable the account for ${user.name || user.email}?`
+												: `Disable the account for ${user.name || user.email}?`,
+											user.disabled === 'true' ? 'Enable' : 'Disable',
+											user.disabled === 'true' ? 'info' : 'danger'
+										);
+										return;
+									}
+									skipConfirm = false;
+									return async ({ update }) => {
+										await update();
+									};
 								}}
 							>
 								<input type="hidden" name="userId" value={user.id} />

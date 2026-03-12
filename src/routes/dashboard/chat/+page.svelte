@@ -89,8 +89,10 @@
 				throw new Error(data.error || 'Upload failed');
 			}
 			await loadDocuments();
+			showDocPanel = true;
 		} catch (err: any) {
 			uploadError = err.message || 'Failed to upload document.';
+			showDocPanel = true;
 		} finally {
 			uploading = false;
 			target.value = '';
@@ -661,7 +663,7 @@
 		<input
 			bind:this={fileInput}
 			type="file"
-			accept=".txt,text/plain"
+			accept=".txt,.pdf,text/plain,application/pdf"
 			onchange={uploadDocument}
 			class="hidden"
 			aria-label="Upload document"
@@ -695,13 +697,26 @@
 							</button>
 						</div>
 					</div>
+					<div class="mb-3">
+						<button
+							onclick={() => fileInput.click()}
+							disabled={uploading}
+							class="flex items-center gap-2 rounded-lg bg-lime-500/20 px-3 py-1.5 text-xs font-medium text-lime-400 transition hover:bg-lime-500/30 disabled:opacity-50"
+						>
+							{#if uploading}
+								Uploading...
+							{:else}
+								Upload file (.txt, .pdf)
+							{/if}
+						</button>
+					</div>
 					{#if uploadError}
 						<p class="mb-2 text-xs text-red-400">{uploadError}</p>
 					{/if}
 					{#if userDocuments.length === 0}
 						<div class="rounded-lg border-2 border-dashed border-slate-600 px-4 py-5 text-center">
 							<p class="text-xs text-slate-500">
-								No documents yet. Upload .txt files to enable RAG.
+								No documents yet. Upload .txt or .pdf files to enable RAG.
 							</p>
 						</div>
 					{:else}
@@ -988,9 +1003,10 @@
 					class="absolute bottom-2.5 left-3 flex h-8 w-8 items-center justify-center rounded-full border border-slate-600 text-slate-400 transition hover:border-slate-500 hover:bg-slate-700 hover:text-slate-200 disabled:opacity-50"
 					title="Upload document"
 					aria-label="Upload document"
+					aria-busy={uploading}
 				>
 					{#if uploading}
-						<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+						<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
 							<circle
 								class="opacity-25"
 								cx="12"
@@ -1013,6 +1029,7 @@
 							stroke-width="2"
 							stroke="currentColor"
 							class="h-4 w-4"
+							aria-hidden="true"
 						>
 							<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
 						</svg>
@@ -1030,6 +1047,7 @@
 							? 'cursor-not-allowed bg-slate-700 text-slate-500'
 							: 'bg-lime-500 text-slate-900 hover:bg-lime-400'}"
 						aria-label="Send message"
+						aria-busy={loading}
 					>
 						{#if loading}
 							<svg
@@ -1037,6 +1055,7 @@
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
 								viewBox="0 0 24 24"
+								aria-hidden="true"
 							>
 								<circle
 									class="opacity-25"
@@ -1060,6 +1079,7 @@
 								stroke-width="2"
 								stroke="currentColor"
 								class="h-4 w-4"
+								aria-hidden="true"
 							>
 								<path
 									stroke-linecap="round"

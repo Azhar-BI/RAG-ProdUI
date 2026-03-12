@@ -16,7 +16,7 @@ A full-stack authentication application built with SvelteKit, Auth.js, Drizzle O
 - Profile management (view & update)
 - Production admin dashboard with user analytics, charts, activity log, and role management
 - AI chat interface with streaming responses, auto-generated titles (Vercel AI SDK + Gemini)
-- RAG-powered document context with pgvector embeddings
+- RAG-powered document context with pgvector embeddings (text and PDF ingestion)
 - Tree-structured chat history with branching and editing
 - Responsive UI with TailwindCSS
 

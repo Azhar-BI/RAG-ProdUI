@@ -49,7 +49,7 @@
 </script>
 
 {#if role === 'user'}
-	<!-- User message: right-aligned dark bubble, no avatar like ChatGPT -->
+	<!-- User message: right-aligned dark bubble -->
 	<div class="group flex justify-end">
 		<div class="flex max-w-[70%] flex-col items-end">
 			<div class="rounded-3xl bg-slate-700/80 px-5 py-3">
@@ -76,6 +76,7 @@
 									stroke-width="1.5"
 									stroke="currentColor"
 									class="h-3.5 w-3.5"
+									aria-hidden="true"
 								>
 									<path
 										stroke-linecap="round"
@@ -94,7 +95,7 @@
 		</div>
 	</div>
 {:else}
-	<!-- Assistant message: left-aligned, NO bubble, flowing text like ChatGPT -->
+	<!-- Assistant message: left-aligned, flowing text -->
 	<div class="group">
 		<div class="flex items-start gap-3">
 			<!-- AI avatar -->
@@ -108,6 +109,7 @@
 					stroke-width="1.5"
 					stroke="currentColor"
 					class="h-4 w-4 text-slate-900"
+					aria-hidden="true"
 				>
 					<path
 						stroke-linecap="round"
@@ -119,7 +121,7 @@
 
 			<div class="min-w-0 flex-1">
 				{#if content === '' && loading}
-					<div class="flex items-center gap-2 py-2">
+					<div class="flex items-center gap-2 py-2" role="status" aria-label="Generating response">
 						<div class="flex gap-1">
 							<div
 								class="h-2 w-2 animate-bounce rounded-full bg-lime-500"
@@ -137,15 +139,16 @@
 						<span class="text-xs text-slate-500">Thinking...</span>
 					</div>
 				{:else}
-					<!-- No bubble - just flowing text on dark bg like ChatGPT -->
 					<div class="prose-sm leading-relaxed text-slate-200">
 						<MarkdownRenderer {content} />{#if loading}<span
 								class="ml-0.5 inline-block h-4 w-[3px] animate-pulse rounded-sm bg-lime-400 align-middle"
+								role="status"
+								aria-label="Streaming response"
 							></span>{/if}
 					</div>
 				{/if}
 
-				<!-- Action icons row (like ChatGPT: copy, regenerate, etc.) -->
+				<!-- Action icons row -->
 				{#if showActions && content && !loading}
 					<div
 						class="mt-2 flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100"
@@ -156,7 +159,7 @@
 								? 'text-lime-400'
 								: 'text-slate-500 hover:bg-slate-700 hover:text-slate-300'}"
 							title="Copy to clipboard"
-							aria-label="Copy to clipboard"
+							aria-label={copied ? 'Copied' : 'Copy to clipboard'}
 						>
 							{#if copied}
 								<svg
@@ -166,6 +169,7 @@
 									stroke-width="1.5"
 									stroke="currentColor"
 									class="h-4 w-4"
+									aria-hidden="true"
 								>
 									<path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
 								</svg>
@@ -177,6 +181,7 @@
 									stroke-width="1.5"
 									stroke="currentColor"
 									class="h-4 w-4"
+									aria-hidden="true"
 								>
 									<path
 										stroke-linecap="round"
@@ -200,6 +205,7 @@
 									stroke-width="1.5"
 									stroke="currentColor"
 									class="h-4 w-4"
+									aria-hidden="true"
 								>
 									<path
 										stroke-linecap="round"
@@ -218,6 +224,8 @@
 						<button
 							onclick={() => (showCitations = !showCitations)}
 							class="flex items-center gap-1.5 rounded-lg px-2 py-1 text-[11px] font-medium text-lime-400 transition hover:bg-slate-700/50"
+							aria-expanded={showCitations}
+							aria-label="{citations.length} source{citations.length > 1 ? 's' : ''} cited"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -226,6 +234,7 @@
 								stroke-width="1.5"
 								stroke="currentColor"
 								class="h-3.5 w-3.5"
+								aria-hidden="true"
 							>
 								<path
 									stroke-linecap="round"
@@ -241,6 +250,7 @@
 								stroke-width="2"
 								stroke="currentColor"
 								class="h-3 w-3 transition-transform {showCitations ? 'rotate-180' : ''}"
+								aria-hidden="true"
 							>
 								<path
 									stroke-linecap="round"
@@ -264,6 +274,7 @@
 												stroke-width="1.5"
 												stroke="currentColor"
 												class="h-3.5 w-3.5 flex-shrink-0 text-lime-400"
+												aria-hidden="true"
 											>
 												<path
 													stroke-linecap="round"

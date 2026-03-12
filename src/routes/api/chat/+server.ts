@@ -20,14 +20,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	if (lastUserMessage) {
 		try {
 			const chunks = await retrieveContext(lastUserMessage.content, session.user.id);
+			console.log(`[RAG] Query: "${lastUserMessage.content.slice(0, 80)}" → ${chunks.length} chunks found`);
+			if (chunks.length > 0) {
+				console.log(`[RAG] Top similarity: ${(chunks[0].similarity * 100).toFixed(1)}% from ${chunks[0].filename}`);
+			}
 			contextPrompt = buildContextPrompt(chunks);
 			citations = chunks.map((c) => ({
 				filename: c.filename,
 				chunkIndex: c.chunkIndex + 1,
 				similarity: Math.round(c.similarity * 100)
 			}));
-		} catch {
-			// RAG retrieval failed — continue without context
+		} catch (err) {
+			console.error('[RAG] Retrieval failed:', err);
 		}
 	}
 
