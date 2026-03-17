@@ -150,7 +150,7 @@
 							<p class="truncate text-sm font-medium text-white">
 								{data.user?.name || 'User'}
 							</p>
-							<p class="truncate text-xs text-slate-400">{data.user?.email}</p>
+							<p class="truncate text-xs text-slate-300">{data.user?.email}</p>
 						</div>
 					</div>
 					<button

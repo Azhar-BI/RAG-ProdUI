@@ -89,7 +89,7 @@
 					</div>
 				{/if}
 				{#if createdAt}
-					<span class="text-[10px] text-slate-500">{formatTime(createdAt)}</span>
+					<span class="text-xs text-slate-300">{formatTime(createdAt)}</span>
 				{/if}
 			</div>
 		</div>
@@ -136,7 +136,7 @@
 								style="animation-delay: 300ms"
 							></div>
 						</div>
-						<span class="text-xs text-slate-500">Thinking...</span>
+						<span class="text-xs text-slate-300">Thinking...</span>
 					</div>
 				{:else}
 					<div class="prose-sm leading-relaxed text-slate-200">
@@ -223,7 +223,7 @@
 					<div class="mt-2">
 						<button
 							onclick={() => (showCitations = !showCitations)}
-							class="flex items-center gap-1.5 rounded-lg px-2 py-1 text-[11px] font-medium text-lime-400 transition hover:bg-slate-700/50"
+							class="flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-medium text-lime-400 transition hover:bg-slate-700/50"
 							aria-expanded={showCitations}
 							aria-label="{citations.length} source{citations.length > 1 ? 's' : ''} cited"
 						>
@@ -286,7 +286,7 @@
 											<span class="text-slate-500">chunk {cite.chunkIndex}</span>
 										</div>
 										<span
-											class="rounded-full px-2 py-0.5 text-[10px] font-bold {cite.similarity >= 70
+											class="rounded-full px-2 py-0.5 text-xs font-bold {cite.similarity >= 70
 												? 'bg-lime-500/20 text-lime-400'
 												: cite.similarity >= 40
 													? 'bg-yellow-500/20 text-yellow-400'
