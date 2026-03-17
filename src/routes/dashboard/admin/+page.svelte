@@ -188,7 +188,7 @@
 	>
 		<div>
 			<h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Admin Panel</h1>
-			<p class="mt-1 text-sm text-slate-400">Manage users, view analytics, and monitor activity.</p>
+			<p class="mt-1 text-sm text-slate-200">Manage users, view analytics, and monitor activity.</p>
 		</div>
 		<div class="flex items-center gap-2">
 			<span class="rounded-full bg-lime-500/20 px-3 py-1 text-xs font-semibold text-lime-400">
@@ -253,7 +253,7 @@
 					</svg>
 				</div>
 				<p class="text-2xl font-bold text-slate-900">{data.stats.totalUsers}</p>
-				<p class="mt-0.5 text-xs text-slate-500">Total Users</p>
+				<p class="mt-0.5 text-sm font-medium text-slate-700">Total Users</p>
 			</div>
 
 			<!-- Verified -->
@@ -277,7 +277,7 @@
 					</svg>
 				</div>
 				<p class="text-2xl font-bold text-slate-900">{data.stats.verifiedCount}</p>
-				<p class="mt-0.5 text-xs text-slate-500">Verified Users</p>
+				<p class="mt-0.5 text-sm font-medium text-slate-700">Verified Users</p>
 			</div>
 
 			<!-- Active Today -->
@@ -301,7 +301,7 @@
 					</svg>
 				</div>
 				<p class="text-2xl font-bold text-slate-900">{data.stats.activeToday}</p>
-				<p class="mt-0.5 text-xs text-slate-500">Active Today</p>
+				<p class="mt-0.5 text-sm font-medium text-slate-700">Active Today</p>
 			</div>
 
 			<!-- 7-Day Signups -->
@@ -325,7 +325,7 @@
 					</svg>
 				</div>
 				<p class="text-2xl font-bold text-slate-900">{data.stats.recentSignups}</p>
-				<p class="mt-0.5 text-xs text-slate-500">Last 7 Days</p>
+				<p class="mt-0.5 text-sm font-medium text-slate-700">Last 7 Days</p>
 			</div>
 
 			<!-- Conversations -->
@@ -349,7 +349,7 @@
 					</svg>
 				</div>
 				<p class="text-2xl font-bold text-slate-900">{data.stats.totalConversations}</p>
-				<p class="mt-0.5 text-xs text-slate-500">Conversations</p>
+				<p class="mt-0.5 text-sm font-medium text-slate-700">Conversations</p>
 			</div>
 
 			<!-- Messages -->
@@ -373,7 +373,7 @@
 					</svg>
 				</div>
 				<p class="text-2xl font-bold text-slate-900">{data.stats.totalMessages}</p>
-				<p class="mt-0.5 text-xs text-slate-500">Messages</p>
+				<p class="mt-0.5 text-sm font-medium text-slate-700">Messages</p>
 			</div>
 
 			<!-- Documents -->
@@ -397,7 +397,7 @@
 					</svg>
 				</div>
 				<p class="text-2xl font-bold text-slate-900">{data.stats.totalDocuments}</p>
-				<p class="mt-0.5 text-xs text-slate-500">Documents</p>
+				<p class="mt-0.5 text-sm font-medium text-slate-700">Documents</p>
 			</div>
 
 			<!-- Admins -->
@@ -421,7 +421,7 @@
 					</svg>
 				</div>
 				<p class="text-2xl font-bold text-slate-900">{data.stats.adminCount}</p>
-				<p class="mt-0.5 text-xs text-slate-500">Admins</p>
+				<p class="mt-0.5 text-sm font-medium text-slate-700">Admins</p>
 			</div>
 		</div>
 
@@ -459,7 +459,7 @@
 				{#if data.charts.topUsers.length > 0}
 					<MiniBarChart data={data.charts.topUsers} color="#8b5cf6" />
 				{:else}
-					<p class="py-6 text-center text-sm text-slate-400">No conversations yet</p>
+					<p class="py-6 text-center text-sm text-slate-700">No conversations yet</p>
 				{/if}
 			</div>
 		</div>
@@ -554,7 +554,7 @@
 						</button>
 					</div>
 				</div>
-				<div class="mt-2 text-xs text-slate-500">
+				<div class="mt-2 text-sm text-slate-700">
 					Showing {data.pagination.totalFiltered} user{data.pagination.totalFiltered !== 1
 						? 's'
 						: ''}
@@ -601,7 +601,7 @@
 										</div>
 										<div class="min-w-0">
 											<p class="truncate font-medium text-slate-900">{user.name || '—'}</p>
-											<p class="truncate text-xs text-slate-500">{user.email}</p>
+											<p class="truncate text-xs text-slate-700">{user.email}</p>
 										</div>
 									</div>
 								</td>
@@ -630,10 +630,10 @@
 										{/if}
 									</div>
 								</td>
-								<td class="px-5 py-3.5 text-xs text-slate-500">
+								<td class="px-5 py-3.5 text-xs text-slate-700">
 									{relativeTime(user.lastLoginAt)}
 								</td>
-								<td class="px-5 py-3.5 text-xs text-slate-500">{formatDate(user.createdAt)}</td>
+								<td class="px-5 py-3.5 text-xs text-slate-700">{formatDate(user.createdAt)}</td>
 								<td class="px-5 py-3.5 text-right">
 									<div class="flex items-center justify-end gap-1.5">
 										<!-- Toggle Role -->
@@ -735,8 +735,8 @@
 											d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
 										/>
 									</svg>
-									<p class="mt-2 text-sm text-slate-500">No users found</p>
-									<p class="text-xs text-slate-400">Try adjusting your search or filters</p>
+									<p class="mt-2 text-sm text-slate-700">No users found</p>
+									<p class="text-xs text-slate-600">Try adjusting your search or filters</p>
 								</td>
 							</tr>
 						{/each}
@@ -757,7 +757,7 @@
 								</div>
 								<div class="min-w-0">
 									<p class="font-medium text-slate-900">{user.name || '—'}</p>
-									<p class="truncate text-xs text-slate-500">{user.email}</p>
+									<p class="truncate text-xs text-slate-700">{user.email}</p>
 								</div>
 							</div>
 							<span
@@ -769,7 +769,7 @@
 								{user.role}
 							</span>
 						</div>
-						<div class="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+						<div class="flex flex-wrap items-center gap-2 text-sm text-slate-700">
 							<span
 								class="inline-flex items-center rounded-full px-2 py-0.5 font-semibold {user.disabled ===
 								'true'

@@ -529,7 +529,7 @@
 
 			<!-- Your chats label -->
 			<div class="px-5 pt-3 pb-1">
-				<span class="text-xs font-medium text-slate-500">Your chats</span>
+				<span class="text-xs font-semibold text-slate-300">Your chats</span>
 			</div>
 
 			<!-- Conversation list -->
@@ -550,7 +550,7 @@
 								d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"
 							/>
 						</svg>
-						<p class="text-xs text-slate-600">
+						<p class="text-xs text-slate-400">
 							{searchQuery ? 'No matches found' : 'No conversations yet'}
 						</p>
 					</div>
@@ -630,7 +630,7 @@
 					</svg>
 				</div>
 				<span class="text-sm font-medium text-slate-300">AuthFlow AI</span>
-				<span class="flex items-center gap-1 text-[10px] text-slate-500">
+				<span class="flex items-center gap-1 text-xs text-slate-300">
 					<span class="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-500"></span>
 					Gemini
 				</span>
@@ -676,7 +676,7 @@
 					<div class="mb-3 flex items-center justify-between">
 						<div>
 							<h3 class="text-sm font-semibold text-slate-200">Knowledge Base</h3>
-							<p class="text-[11px] text-slate-500">Upload documents for context-aware answers</p>
+							<p class="text-xs text-slate-300">Upload documents for context-aware answers</p>
 						</div>
 						<div class="flex items-center gap-2">
 							<button
@@ -715,7 +715,7 @@
 					{/if}
 					{#if userDocuments.length === 0}
 						<div class="rounded-lg border-2 border-dashed border-slate-600 px-4 py-5 text-center">
-							<p class="text-xs text-slate-500">
+							<p class="text-xs text-slate-300">
 								No documents yet. Upload .txt or .pdf files to enable RAG.
 							</p>
 						</div>
@@ -796,7 +796,7 @@
 						</svg>
 					</div>
 					<h2 class="mb-2 text-2xl font-semibold text-slate-100">What can I help with?</h2>
-					<p class="mb-10 max-w-md text-center text-sm text-slate-500">
+					<p class="mb-10 max-w-md text-center text-sm text-slate-300">
 						Ask anything — code, writing, analysis. Upload documents for context-aware answers.
 					</p>
 
@@ -820,7 +820,7 @@
 									>
 										<path stroke-linecap="round" stroke-linejoin="round" d={prompt.icon} />
 									</svg>
-									<span class="text-[10px] font-bold tracking-wider text-slate-500 uppercase"
+									<span class="text-xs font-bold tracking-wider text-slate-300 uppercase"
 										>{prompt.label}</span
 									>
 								</div>
@@ -867,7 +867,7 @@
 									</svg>
 								</button>
 								<span
-									class="min-w-[3rem] rounded-md bg-slate-800 px-2 py-0.5 text-center text-[11px] font-semibold text-slate-400"
+									class="min-w-[3rem] rounded-md bg-slate-800 px-2 py-0.5 text-center text-xs font-semibold text-slate-400"
 								>
 									{siblingIdx + 1} / {siblings.length}
 								</span>
@@ -1036,7 +1036,7 @@
 					{/if}
 				</button>
 				<div class="absolute right-2.5 bottom-2.5 flex items-center gap-2">
-					<span class="hidden text-[10px] text-slate-600 sm:block">
+					<span class="hidden text-xs text-slate-300 sm:block">
 						{#if loading}Generating...{:else}Shift+Enter for new line{/if}
 					</span>
 					<button
@@ -1092,7 +1092,7 @@
 				</div>
 			</div>
 			<!-- Disclaimer like ChatGPT -->
-			<p class="mt-2 text-center text-[11px] text-slate-600">
+			<p class="mt-2 text-center text-xs text-slate-300">
 				AuthFlow AI can make mistakes. Check important info.
 			</p>
 		</div>
