@@ -11,13 +11,34 @@ export interface RetrievedChunk {
 	similarity: number;
 }
 
+const MIN_SIMILARITY = 0.15;
+
 export async function retrieveContext(
 	query: string,
 	userId: string,
 	topK = 5
 ): Promise<RetrievedChunk[]> {
+	console.log(`[RAG] Embedding query for user ${userId}...`);
 	const queryEmbedding = await embedText(query);
+	console.log(`[RAG] Got embedding with ${queryEmbedding.length} dimensions`);
 	const embeddingStr = `[${queryEmbedding.join(',')}]`;
+
+	// Debug: check how many chunks exist for this user
+	const totalChunks = await db
+		.select({ count: sql<number>`count(*)` })
+		.from(documentChunks)
+		.innerJoin(documents, eq(documentChunks.documentId, documents.id))
+		.where(eq(documents.userId, userId));
+
+	const withEmbeddings = await db
+		.select({ count: sql<number>`count(*)` })
+		.from(documentChunks)
+		.innerJoin(documents, eq(documentChunks.documentId, documents.id))
+		.where(and(eq(documents.userId, userId), sql`${documentChunks.embedding} IS NOT NULL`));
+
+	console.log(
+		`[RAG] User has ${totalChunks[0].count} total chunks, ${withEmbeddings[0].count} with embeddings`
+	);
 
 	const results = await db
 		.select({
@@ -33,7 +54,18 @@ export async function retrieveContext(
 		.orderBy(sql`${documentChunks.embedding} <=> ${embeddingStr}::vector`)
 		.limit(topK);
 
-	return results;
+	// Log all results with their similarity before filtering
+	if (results.length > 0) {
+		console.log(`[RAG] Top results before threshold filter:`);
+		results.forEach((r, i) =>
+			console.log(
+				`  [${i}] ${r.filename} chunk ${r.chunkIndex}: ${(r.similarity * 100).toFixed(1)}%`
+			)
+		);
+	}
+
+	// Apply minimum similarity filter
+	return results.filter((r) => r.similarity >= MIN_SIMILARITY);
 }
 
 export function buildContextPrompt(chunks: RetrievedChunk[]): string {

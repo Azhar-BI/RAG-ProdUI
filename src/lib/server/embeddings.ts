@@ -23,3 +23,21 @@ export async function embedBatch(texts: string[]): Promise<number[][]> {
 	const data = await res.json();
 	return data.embeddings;
 }
+
+export async function parsePdf(file: File): Promise<string> {
+	const formData = new FormData();
+	formData.append('file', file);
+
+	const res = await fetch(`${getBaseUrl()}/parse-pdf`, {
+		method: 'POST',
+		body: formData
+	});
+
+	if (!res.ok) {
+		const err = await res.json().catch(() => ({ detail: 'Failed to parse PDF' }));
+		throw new Error(err.detail || 'Failed to parse PDF');
+	}
+
+	const data = await res.json();
+	return data.text;
+}

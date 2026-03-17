@@ -3,14 +3,13 @@ import { db } from '$lib/server/db';
 import { conversations, chatMessages } from '$lib/server/schema';
 import { eq, and, asc } from 'drizzle-orm';
 
-// GET — load messages for a conversation
+// GET — load all messages for a conversation (full tree)
 export const GET: RequestHandler = async ({ params, locals }) => {
 	const session = await locals.auth();
 	if (!session?.user?.id) {
 		return new Response('Unauthorized', { status: 401 });
 	}
 
-	// Verify the conversation belongs to the user
 	const [conversation] = await db
 		.select()
 		.from(conversations)
@@ -20,16 +19,23 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 		return new Response('Not found', { status: 404 });
 	}
 
-	const messages = await db
+	const rawMessages = await db
 		.select({
 			id: chatMessages.id,
+			parentId: chatMessages.parentId,
 			role: chatMessages.role,
 			content: chatMessages.content,
+			citations: chatMessages.citations,
 			createdAt: chatMessages.createdAt
 		})
 		.from(chatMessages)
 		.where(eq(chatMessages.conversationId, params.id))
 		.orderBy(asc(chatMessages.createdAt));
+
+	const messages = rawMessages.map((m) => ({
+		...m,
+		citations: m.citations ? JSON.parse(m.citations) : undefined
+	}));
 
 	return Response.json({ conversation, messages });
 };

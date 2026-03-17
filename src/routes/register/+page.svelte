@@ -5,18 +5,18 @@
 	let { data, form } = $props();
 </script>
 
-<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+<div class="min-h-screen bg-slate-50">
 	<!-- Navbar -->
-	<nav class="fixed top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md">
+	<nav class="fixed top-0 z-50 w-full bg-white shadow-sm">
 		<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
 			<a href="/" class="text-xl font-bold tracking-tight">
-				<span class="text-black">Auth</span><span class="text-gray-500">Flow</span>
+				<span class="text-slate-900">Auth</span><span class="text-lime-500">Flow</span>
 			</a>
 			<div class="flex items-center gap-3">
-				<span class="hidden text-sm text-gray-500 sm:inline">Already have an account?</span>
+				<span class="hidden text-sm text-slate-500 sm:inline">Already have an account?</span>
 				<a
 					href="/login"
-					class="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
+					class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
 				>
 					Login
 				</a>
@@ -28,13 +28,17 @@
 	<div class="flex min-h-screen pt-16">
 		<!-- Left brand panel (hidden on mobile) -->
 		<div
-			class="relative sticky top-0 hidden h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 to-black md:flex md:w-[45%] lg:w-[42%]"
+			class="relative sticky top-0 hidden h-screen items-center justify-center overflow-hidden bg-slate-900 md:flex md:w-[45%] lg:w-[42%]"
 		>
-			<div class="absolute inset-0 opacity-5">
-				<div class="absolute top-20 left-10 h-40 w-40 rounded-full border border-white"></div>
-				<div class="absolute right-8 bottom-32 h-64 w-64 rounded-full border border-white"></div>
-				<div class="absolute top-1/2 left-1/3 h-20 w-20 rounded-full border border-white"></div>
-			</div>
+			<!-- Decorative gradient orbs -->
+			<div class="absolute top-1/4 left-1/4 h-64 w-64 rounded-full bg-lime-500/15 blur-3xl"></div>
+			<div
+				class="absolute right-1/4 bottom-1/4 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl"
+			></div>
+			<div
+				class="absolute top-1/2 left-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime-500/10 blur-3xl"
+			></div>
+
 			<div
 				class="absolute inset-0 opacity-[0.03]"
 				style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;1&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"
@@ -42,15 +46,15 @@
 
 			<div class="relative z-10 px-12 text-center lg:px-16">
 				<div
-					class="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/10 backdrop-blur-sm"
+					class="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-lime-500 shadow-lg shadow-lime-500/25"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke-width="1.5"
-						stroke="white"
-						class="h-8 w-8"
+						stroke="currentColor"
+						class="h-8 w-8 text-slate-900"
 					>
 						<path
 							stroke-linecap="round"
@@ -60,13 +64,13 @@
 					</svg>
 				</div>
 				<h2 class="mb-4 text-3xl font-bold text-white lg:text-4xl">Get Started Today</h2>
-				<p class="mx-auto max-w-sm text-base leading-relaxed text-gray-400 lg:text-lg">
+				<p class="mx-auto max-w-sm text-base leading-relaxed text-slate-400 lg:text-lg">
 					Join thousands of companies using AuthFlow to build, scale, and secure their products.
 				</p>
 				<div class="mt-10 flex justify-center gap-2">
-					<span class="h-1 w-8 rounded-full bg-white/30"></span>
-					<span class="h-1 w-8 rounded-full bg-white"></span>
-					<span class="h-1 w-8 rounded-full bg-white/30"></span>
+					<span class="h-1 w-8 rounded-full bg-white/20"></span>
+					<span class="h-1 w-8 rounded-full bg-lime-400"></span>
+					<span class="h-1 w-8 rounded-full bg-white/20"></span>
 				</div>
 			</div>
 		</div>
@@ -76,10 +80,10 @@
 			class="flex w-full items-center justify-center px-4 py-12 md:w-[55%] md:px-8 lg:w-[58%] lg:px-16"
 		>
 			<div class="w-full max-w-md">
-				<div class="rounded-2xl border border-gray-200 bg-white p-8 shadow-xl md:p-10">
+				<div class="rounded-2xl border border-slate-200 bg-white p-8 shadow-xl md:p-10">
 					<div class="mb-8 text-center">
 						<div
-							class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-black"
+							class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -96,8 +100,12 @@
 								/>
 							</svg>
 						</div>
-						<h1 class="text-3xl font-bold text-gray-900">Join AuthFlow</h1>
-						<p class="mt-2 text-sm text-gray-500">Create your account to access secure services.</p>
+						<h1 class="text-3xl font-bold text-slate-900">
+							Join <span class="text-slate-900">Auth</span><span class="text-lime-500">Flow</span>
+						</h1>
+						<p class="mt-2 text-sm text-slate-500">
+							Create your account to access secure services.
+						</p>
 					</div>
 
 					{#if data.hasUnverifiedSession}
@@ -127,7 +135,7 @@
 							<button
 								onclick={() => signIn('google', { redirectTo: '/dashboard' })}
 								type="button"
-								class="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-300 px-4 py-2.5 font-medium text-gray-700 transition-all duration-200 hover:bg-gray-50"
+								class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 px-4 py-2.5 font-medium text-slate-700 transition-all duration-200 hover:bg-slate-50"
 							>
 								<svg class="h-5 w-5" viewBox="0 0 24 24">
 									<path
@@ -152,7 +160,7 @@
 							<button
 								onclick={() => signIn('github', { redirectTo: '/dashboard' })}
 								type="button"
-								class="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-300 px-4 py-2.5 font-medium text-gray-700 transition-all duration-200 hover:bg-gray-50"
+								class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 px-4 py-2.5 font-medium text-slate-700 transition-all duration-200 hover:bg-slate-50"
 							>
 								<svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
 									<path
@@ -167,16 +175,16 @@
 					<!-- Divider -->
 					<div class="relative mb-6">
 						<div class="absolute inset-0 flex items-center">
-							<div class="w-full border-t border-gray-200"></div>
+							<div class="w-full border-t border-slate-200"></div>
 						</div>
 						<div class="relative flex justify-center text-sm">
-							<span class="bg-white px-4 text-gray-400">or continue with email</span>
+							<span class="bg-white px-4 text-slate-400">or continue with email</span>
 						</div>
 					</div>
 
 					<form method="POST" action="?/register" class="flex flex-col gap-5" use:enhance>
 						<div>
-							<label for="name" class="mb-1.5 block text-sm font-medium text-gray-700"
+							<label for="name" class="mb-1.5 block text-sm font-medium text-slate-700"
 								>Full Name</label
 							>
 							<input
@@ -184,13 +192,13 @@
 								name="name"
 								type="text"
 								required
-								class="w-full rounded-xl border border-gray-300 p-2.5 transition focus:border-transparent focus:ring-2 focus:ring-black focus:outline-none"
+								class="w-full rounded-xl border border-slate-200 p-2.5 transition focus:border-transparent focus:ring-2 focus:ring-lime-500 focus:outline-none"
 								placeholder="John Doe"
 							/>
 						</div>
 
 						<div>
-							<label for="email" class="mb-1.5 block text-sm font-medium text-gray-700"
+							<label for="email" class="mb-1.5 block text-sm font-medium text-slate-700"
 								>Email Address</label
 							>
 							<input
@@ -198,13 +206,13 @@
 								name="email"
 								type="email"
 								required
-								class="w-full rounded-xl border border-gray-300 p-2.5 transition focus:border-transparent focus:ring-2 focus:ring-black focus:outline-none"
+								class="w-full rounded-xl border border-slate-200 p-2.5 transition focus:border-transparent focus:ring-2 focus:ring-lime-500 focus:outline-none"
 								placeholder="you@example.com"
 							/>
 						</div>
 
 						<div>
-							<label for="password" class="mb-1.5 block text-sm font-medium text-gray-700"
+							<label for="password" class="mb-1.5 block text-sm font-medium text-slate-700"
 								>Password</label
 							>
 							<input
@@ -213,10 +221,10 @@
 								type="password"
 								required
 								minlength="6"
-								class="w-full rounded-xl border border-gray-300 p-2.5 transition focus:border-transparent focus:ring-2 focus:ring-black focus:outline-none"
+								class="w-full rounded-xl border border-slate-200 p-2.5 transition focus:border-transparent focus:ring-2 focus:ring-lime-500 focus:outline-none"
 								placeholder="Letters & numbers, min. 6 chars"
 							/>
-							<p class="mt-1.5 text-xs text-gray-400">
+							<p class="mt-1.5 text-xs text-slate-400">
 								Must be at least 6 characters with both letters and numbers.
 							</p>
 						</div>
@@ -231,14 +239,14 @@
 
 						<button
 							type="submit"
-							class="rounded-xl bg-black py-3 font-medium text-white transition-all duration-200 hover:bg-gray-800"
+							class="rounded-xl bg-slate-900 py-3 font-medium text-white transition-all duration-200 hover:bg-slate-800"
 						>
 							Create Account
 						</button>
 
-						<p class="text-center text-sm text-gray-500">
+						<p class="text-center text-sm text-slate-500">
 							Already have an account?
-							<a href="/login" class="font-medium text-black hover:underline">Login</a>
+							<a href="/login" class="font-medium text-lime-600 hover:text-lime-700">Login</a>
 						</p>
 					</form>
 				</div>

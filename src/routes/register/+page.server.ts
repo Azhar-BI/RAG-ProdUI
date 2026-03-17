@@ -52,7 +52,8 @@ export const actions: Actions = {
 		await db.insert(users).values({
 			name,
 			email,
-			password: hashedPassword
+			password: hashedPassword,
+			role: 'user'
 		});
 
 		const token = crypto.randomUUID();

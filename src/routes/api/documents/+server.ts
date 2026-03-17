@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
 import { documents, documentChunks } from '$lib/server/schema';
 import { chunkText } from '$lib/server/chunker';
-import { embedBatch } from '$lib/server/embeddings';
+import { embedBatch, parsePdf } from '$lib/server/embeddings';
 import { eq, desc } from 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ locals }) => {
@@ -33,12 +33,26 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	if (!file) return json({ error: 'No file provided' }, { status: 400 });
 
-	const allowedTypes = ['text/plain'];
-	if (!allowedTypes.includes(file.type) && !file.name.endsWith('.txt')) {
-		return json({ error: 'Only text files are supported' }, { status: 400 });
+	const isPdf = file.type === 'application/pdf' || file.name.endsWith('.pdf');
+	const isTxt = file.type === 'text/plain' || file.name.endsWith('.txt');
+
+	if (!isPdf && !isTxt) {
+		return json({ error: 'Only text (.txt) and PDF (.pdf) files are supported' }, { status: 400 });
 	}
 
-	const content = await file.text();
+	let content: string;
+
+	if (isPdf) {
+		try {
+			content = await parsePdf(file);
+		} catch (err) {
+			const message = err instanceof Error ? err.message : 'Failed to parse PDF';
+			return json({ error: message }, { status: 400 });
+		}
+	} else {
+		content = await file.text();
+	}
+
 	if (!content.trim()) return json({ error: 'File is empty' }, { status: 400 });
 
 	// Save document
@@ -47,7 +61,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		.values({
 			userId: session.user.id,
 			filename: file.name,
-			mimeType: file.type || 'text/plain',
+			mimeType: isPdf ? 'application/pdf' : 'text/plain',
 			content
 		})
 		.returning();

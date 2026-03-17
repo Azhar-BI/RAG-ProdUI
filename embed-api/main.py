@@ -1,7 +1,8 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
 import numpy as np
+import fitz  # PyMuPDF
 
 app = FastAPI(title="Embedding API")
 
@@ -47,3 +48,29 @@ def embed_batch(req: EmbedBatchRequest):
     return EmbedBatchResponse(
         embeddings=embeddings, dimensions=len(embeddings[0])
     )
+
+
+class ParsePdfResponse(BaseModel):
+    text: str
+    pages: int
+
+
+@app.post("/parse-pdf", response_model=ParsePdfResponse)
+async def parse_pdf(file: UploadFile = File(...)):
+    if not file.filename or not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are accepted")
+    content = await file.read()
+    try:
+        doc = fitz.open(stream=content, filetype="pdf")
+        text_parts = []
+        for page in doc:
+            text_parts.append(page.get_text())
+        doc.close()
+        text = "\n".join(text_parts).strip()
+        if not text:
+            raise HTTPException(status_code=400, detail="PDF contains no extractable text")
+        return ParsePdfResponse(text=text, pages=len(text_parts))
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to parse PDF: {str(e)}")

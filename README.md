@@ -14,8 +14,10 @@ A full-stack authentication application built with SvelteKit, Auth.js, Drizzle O
 - Password reset via secure email link
 - Protected routes with auth guards
 - Profile management (view & update)
-- Admin dashboard with user analytics, role management, and account controls
-- AI chat interface with streaming responses (Vercel AI SDK + Gemini)
+- Production admin dashboard with user analytics, charts, activity log, and role management
+- AI chat interface with streaming responses, auto-generated titles (Vercel AI SDK + Gemini)
+- RAG-powered document context with pgvector embeddings (text and PDF ingestion)
+- Tree-structured chat history with branching and editing
 - Responsive UI with TailwindCSS
 
 ---
@@ -47,28 +49,30 @@ cp .env.example .env
 
 Fill in the required values in `.env`:
 
-| Variable                | Description                                |
-| ----------------------- | ------------------------------------------ |
-| `DATABASE_URL`          | PostgreSQL connection string               |
-| `AUTH_SECRET`           | Secret key for Auth.js session signing     |
-| `EMAIL_SERVER_HOST`     | SMTP server hostname                       |
-| `EMAIL_SERVER_PORT`     | SMTP server port (e.g., 2525 for Mailtrap) |
-| `EMAIL_SERVER_USER`     | SMTP username                              |
-| `EMAIL_SERVER_PASSWORD` | SMTP password                              |
-| `EMAIL_FROM`            | Sender email address                       |
-| `AUTH_GOOGLE_ID`        | Google OAuth client ID                     |
-| `AUTH_GOOGLE_SECRET`    | Google OAuth client secret                 |
-| `AUTH_GITHUB_ID`        | GitHub OAuth client ID                     |
-| `AUTH_GITHUB_SECRET`    | GitHub OAuth client secret                 |
-| `GEMINI_API_KEY`        | Google Gemini API key for AI chat          |
+| Variable                | Description                                     |
+| ----------------------- | ----------------------------------------------- |
+| `DATABASE_URL`          | PostgreSQL connection string                    |
+| `AUTH_SECRET`           | Secret key for Auth.js session signing          |
+| `EMAIL_SERVER_HOST`     | SMTP server hostname                            |
+| `EMAIL_SERVER_PORT`     | SMTP server port (e.g., 2525 for Mailtrap)      |
+| `EMAIL_SERVER_USER`     | SMTP username                                   |
+| `EMAIL_SERVER_PASSWORD` | SMTP password                                   |
+| `EMAIL_FROM`            | Sender email address                            |
+| `AUTH_GOOGLE_ID`        | Google OAuth client ID                          |
+| `AUTH_GOOGLE_SECRET`    | Google OAuth client secret                      |
+| `AUTH_GITHUB_ID`        | GitHub OAuth client ID                          |
+| `AUTH_GITHUB_SECRET`    | GitHub OAuth client secret                      |
+| `GEMINI_API_KEY`        | Google Gemini API key for AI chat               |
+| `AUTH_URL`              | App base URL (e.g., `http://localhost:5173`)    |
+| `EMBEDDING_API_URL`     | Embedding service URL (`http://localhost:8000`) |
 
-### 3. Start the Database
+### 3. Start the Database and Embedding Service
 
 ```bash
 pnpm db:start
 ```
 
-This starts a PostgreSQL 16 container via Docker Compose.
+This starts PostgreSQL 16 (with pgvector) and the Python embedding API via Docker Compose. The embedding service may take a minute on first run to download the model.
 
 ### 4. Push the Schema
 
@@ -100,6 +104,7 @@ The app will be available at [http://localhost:5173](http://localhost:5173).
 | `pnpm db:stop`     | Stop PostgreSQL                   |
 | `pnpm db:push`     | Push schema to database           |
 | `pnpm db:generate` | Generate Drizzle migrations       |
+| `pnpm db:seed`     | Seed database with sample data    |
 | `pnpm db:studio`   | Open Drizzle Studio               |
 
 ---
@@ -123,5 +128,3 @@ The app will be available at [http://localhost:5173](http://localhost:5173).
 - **Email not sending:** Double-check your SMTP credentials in `.env`. Mailtrap is recommended for development.
 - **OAuth not working:** Ensure your Google/GitHub OAuth app callback URLs are set to `http://localhost:5173/auth/callback/google` and `http://localhost:5173/auth/callback/github`.
 - **Build fails:** Run `pnpm check` to see type errors, and `pnpm lint` to check formatting.
-
-# RAG-ProdUI

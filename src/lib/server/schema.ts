@@ -6,7 +6,8 @@ import {
 	integer,
 	primaryKey,
 	vector,
-	index
+	index,
+	jsonb
 } from 'drizzle-orm/pg-core';
 
 /**
@@ -21,6 +22,8 @@ export const users = pgTable('users', {
 	image: text('image'),
 	role: text('role').notNull().default('user'),
 	disabled: text('disabled').notNull().default('false'),
+	lastLoginAt: timestamp('last_login_at'),
+	loginCount: integer('login_count').notNull().default(0),
 	createdAt: timestamp('created_at').defaultNow()
 });
 
@@ -99,8 +102,10 @@ export const chatMessages = pgTable('chat_messages', {
 	conversationId: uuid('conversation_id')
 		.notNull()
 		.references(() => conversations.id, { onDelete: 'cascade' }),
+	parentId: uuid('parent_id'),
 	role: text('role').notNull(), // 'user' | 'assistant'
 	content: text('content').notNull(),
+	citations: text('citations'), // JSON string of citations array
 	createdAt: timestamp('created_at').defaultNow()
 });
 
@@ -152,3 +157,15 @@ export const passwordResetTokens = pgTable(
 		compoundKey: primaryKey(prt.identifier, prt.token)
 	})
 );
+
+/**
+ * ACTIVITY LOGS TABLE (admin audit trail)
+ */
+export const activityLogs = pgTable('activity_logs', {
+	id: uuid('id').defaultRandom().primaryKey(),
+	userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+	action: text('action').notNull(),
+	targetUserId: uuid('target_user_id').references(() => users.id, { onDelete: 'set null' }),
+	metadata: jsonb('metadata'),
+	createdAt: timestamp('created_at').defaultNow()
+});
