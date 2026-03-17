@@ -161,7 +161,9 @@
 				</svg>
 				Change Password
 			</h2>
-			<p class="mt-1 text-sm text-slate-700">Keep your account secure by updating your password regularly.</p>
+			<p class="mt-1 text-sm text-slate-700">
+				Keep your account secure by updating your password regularly.
+			</p>
 		</div>
 
 		{#if form?.passwordSuccess}
